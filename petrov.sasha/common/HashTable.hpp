@@ -7,10 +7,12 @@
 #include <cstddef>
 #include <algorithm>
 
-namespace petrov {
+namespace petrov
+{
 
   template< class Key, class Value >
-  struct Node {
+  struct Node
+	{
     Key key;
     Value value;
     Node* next;
@@ -23,7 +25,8 @@ namespace petrov {
   };
 
   template< class Key, class Value, class Hash, class Equal >
-  class HTIterator {
+  class HTIterator
+	{
     template< class K, class V, class H, class E >
     friend class HashTable;
 
@@ -163,7 +166,8 @@ namespace petrov {
   };
 
   template< class Key, class Value, class Hash, class Equal >
-  class HashTable {
+  class HashTable
+	{
   public:
     using iterator = HTIterator< Key, Value, Hash, Equal >;
     using const_iterator = HTConstIterator< Key, Value, Hash, Equal >;
