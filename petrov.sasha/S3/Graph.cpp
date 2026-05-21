@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <set>
 
-namespace petrov {
-
+namespace petrov
+{
   Graph::Graph():
     edges_(100),
     vertices_()
@@ -13,7 +13,7 @@ namespace petrov {
   {
     vertices_.insert(from);
     vertices_.insert(to);
-
+    
     EdgeKey key = {from, to};
     if (edges_.has(key)) {
       EdgeValue& weights = edges_.get(key);
@@ -74,9 +74,15 @@ namespace petrov {
       output.push_back({pair.first, sortedWeights});
     }
 
-    std::sort(output.begin(), output.end(), [](const auto& a, const auto& b) {
-      return a.first < b.first;
-    });
+    for (size_t i = 0; i < output.size(); ++i) {
+      for (size_t j = i + 1; j < output.size(); ++j) {
+        if (output[i].first > output[j].first) {
+          std::pair< std::string, EdgeValue > temp = output[i];
+          output[i] = output[j];
+          output[j] = temp;
+        }
+      }
+    }
 
     return output;
   }
@@ -108,9 +114,15 @@ namespace petrov {
       output.push_back({pair.first, sortedWeights});
     }
 
-    std::sort(output.begin(), output.end(), [](const auto& a, const auto& b) {
-      return a.first < b.first;
-    });
+    for (size_t i = 0; i < output.size(); ++i) {
+      for (size_t j = i + 1; j < output.size(); ++j) {
+        if (output[i].first > output[j].first) {
+          std::pair< std::string, EdgeValue > temp = output[i];
+          output[i] = output[j];
+          output[j] = temp;
+        }
+      }
+    }
 
     return output;
   }
