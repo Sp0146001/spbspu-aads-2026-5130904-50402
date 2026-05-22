@@ -69,7 +69,7 @@ std::size_t petrov::BSTree< Key, Value, Compare >::height() const noexcept {
 }
 
 template< class Key, class Value, class Compare >
-void petrov::BSTree< Key, Value, Compare >::push(const Key& key, const Value & value) {
+void petrov::BSTree< Key, Value, Compare >::push(const Key& key, const Value& value) {
   if (root() == nullptr)
   {
     setRoot(new Node(key, value, m_fake));
@@ -109,4 +109,22 @@ petrov::BSTree< Key, Value, Compare >::findNode(const Key& key) const noexcept {
     }
   }
   return nullptr;
+}
+
+template< class Key, class Value, class Compare >
+Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) {
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  return node->data.second;
+}
+
+template< class Key, class Value, class Compare >
+const Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) const {
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  return node->data.second;
 }
