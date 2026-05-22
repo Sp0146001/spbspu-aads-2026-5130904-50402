@@ -50,3 +50,20 @@ void petrov::BSTree< Key, Value, Compare >::clear(Node* node) noexcept {
   clear(node->right);
   delete node;
 }
+
+template< class Key, class Value, class Compare >
+std::size_t petrov::BSTree< Key, Value, Compare >::height(Node* node) const noexcept {
+  if (node == nullptr) {
+    return 0;
+  }
+
+  std::size_t leftHeight = height(node->left);
+  std::size_t rightHeight = height(node->right);
+
+  return std::max(leftHeight, rightHeight) + 1;
+}
+
+template< class Key, class Value, class Compare >
+std::size_t petrov::BSTree< Key, Value, Compare >::height() const noexcept {
+  return height(root());
+}
