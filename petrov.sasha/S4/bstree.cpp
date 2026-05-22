@@ -69,7 +69,7 @@ std::size_t petrov::BSTree< Key, Value, Compare >::height() const noexcept {
 }
 
 template< class Key, class Value, class Compare >
-void petrov::BSTree< Key, Value, Compare >::push(const Key & key, const Value & value) {
+void petrov::BSTree< Key, Value, Compare >::push(const Key& key, const Value & value) {
   if (root() == nullptr)
   {
     setRoot(new Node(key, value, m_fake));
@@ -94,4 +94,19 @@ void petrov::BSTree< Key, Value, Compare >::push(const Key & key, const Value & 
   } else {
     parent->right = newNode;
   }
+}
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node*
+petrov::BSTree< Key, Value, Compare >::findNode(const Key& key) const noexcept {
+  Node* current = root();
+  while (current != nullptr){
+    if (m_compare(key, current->data.first)) {
+      current = current->left;
+    } else if (m_compare(current->data.first, key)) {
+      current = current->right;
+    } else {
+      return current;
+    }
+  }
+  return nullptr;
 }
