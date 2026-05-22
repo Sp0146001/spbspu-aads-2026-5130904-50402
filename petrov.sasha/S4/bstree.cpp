@@ -23,3 +23,30 @@ void petrov::BSTree< Key, Value, Compare >::setRoot(Node* node) noexcept {
     node->parent = m_fake;
   }
 }
+
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >::BSTree():
+  m_fake(new Node(Key(), Value(), nullptr)),
+  m_compare()
+{
+  m_fake->left = nullptr;
+  m_fake->right = nullptr;
+}
+
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >::~BSTree() {
+  clear(root());
+  delete m_fake;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::BSTree< Key, Value, Compare >::clear(Node* node) noexcept {
+  if (node == nullptr)
+  {
+    return;
+  }
+
+  clear(node->left);
+  clear(node->right);
+  delete node;
+}
