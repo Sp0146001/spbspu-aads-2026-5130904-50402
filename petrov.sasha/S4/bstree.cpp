@@ -128,3 +128,5 @@ const Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) const {
   }
   return node->data.second;
 }
+
+
