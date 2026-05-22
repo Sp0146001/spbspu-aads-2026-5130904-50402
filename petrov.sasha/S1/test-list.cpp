@@ -18,13 +18,13 @@ BOOST_AUTO_TEST_CASE(test_default_constructor)
 BOOST_AUTO_TEST_CASE(test_push_back)
 {
   petrov::List< int > list;
-  list.pushBack(10);
+  list.push_back(10);
   BOOST_CHECK(!list.empty());
   BOOST_CHECK_EQUAL(list.size(), 1);
   BOOST_CHECK_EQUAL(list.front(), 10);
   BOOST_CHECK_EQUAL(list.back(), 10);
 
-  list.pushBack(20);
+  list.push_back(20);
   BOOST_CHECK_EQUAL(list.size(), 2);
   BOOST_CHECK_EQUAL(list.front(), 10);
   BOOST_CHECK_EQUAL(list.back(), 20);
@@ -33,10 +33,10 @@ BOOST_AUTO_TEST_CASE(test_push_back)
 BOOST_AUTO_TEST_CASE(test_push_front)
 {
   petrov::List< int > list;
-  list.pushFront(10);
+  list.push_front(10);
   BOOST_CHECK_EQUAL(list.front(), 10);
 
-  list.pushFront(20);
+  list.push_front(20);
   BOOST_CHECK_EQUAL(list.front(), 20);
   BOOST_CHECK_EQUAL(list.back(), 10);
   BOOST_CHECK_EQUAL(list.size(), 2);
@@ -45,8 +45,8 @@ BOOST_AUTO_TEST_CASE(test_push_front)
 BOOST_AUTO_TEST_CASE(test_pop_front)
 {
   petrov::List< int > list;
-  list.pushBack(1);
-  list.pushBack(2);
+  list.push_back(1);
+  list.push_back(2);
 
   list.popFront();
   BOOST_CHECK_EQUAL(list.size(), 1);
@@ -60,8 +60,8 @@ BOOST_AUTO_TEST_CASE(test_pop_front)
 BOOST_AUTO_TEST_CASE(test_pop_back)
 {
   petrov::List< int > list;
-  list.pushBack(1);
-  list.pushBack(2);
+  list.push_back(1);
+  list.push_back(2);
 
   list.popBack();
   BOOST_CHECK_EQUAL(list.size(), 1);
@@ -74,9 +74,9 @@ BOOST_AUTO_TEST_CASE(test_pop_back)
 BOOST_AUTO_TEST_CASE(test_clear)
 {
   petrov::List< int > list;
-  list.pushBack(1);
-  list.pushBack(2);
-  list.pushBack(3);
+  list.push_back(1);
+  list.push_back(2);
+  list.push_back(3);
 
   list.clear();
   BOOST_CHECK(list.empty());
@@ -87,8 +87,8 @@ BOOST_AUTO_TEST_CASE(test_clear)
 BOOST_AUTO_TEST_CASE(test_iterator_increment)
 {
   petrov::List< int > list;
-  list.pushBack(10);
-  list.pushBack(20);
+  list.push_back(10);
+  list.push_back(20);
 
   petrov::LIter< int > it = list.begin();
   BOOST_CHECK_EQUAL(*it, 10);
@@ -103,8 +103,8 @@ BOOST_AUTO_TEST_CASE(test_iterator_increment)
 BOOST_AUTO_TEST_CASE(test_iterator_decrement)
 {
   petrov::List< int > list;
-  list.pushBack(10);
-  list.pushBack(20);
+  list.push_back(10);
+  list.push_back(20);
 
   petrov::LIter< int > it = list.begin();
   ++it;
@@ -117,8 +117,8 @@ BOOST_AUTO_TEST_CASE(test_iterator_decrement)
 BOOST_AUTO_TEST_CASE(test_copy_constructor)
 {
   petrov::List< int > list1;
-  list1.pushBack(1);
-  list1.pushBack(2);
+  list1.push_back(1);
+  list1.push_back(2);
 
   petrov::List< int > list2(list1);
   BOOST_CHECK_EQUAL(list2.size(), 2);
@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE(test_copy_constructor)
 BOOST_AUTO_TEST_CASE(test_move_constructor)
 {
   petrov::List< int > list1;
-  list1.pushBack(100);
+  list1.push_back(100);
 
   petrov::List< int > list2(std::move(list1));
   BOOST_CHECK_EQUAL(list2.size(), 1);
@@ -145,10 +145,10 @@ BOOST_AUTO_TEST_CASE(test_move_constructor)
 BOOST_AUTO_TEST_CASE(test_copy_assignment)
 {
   petrov::List< int > list1;
-  list1.pushBack(5);
+  list1.push_back(5);
 
   petrov::List< int > list2;
-  list2.pushBack(10);
+  list2.push_back(10);
 
   list2 = list1;
   BOOST_CHECK_EQUAL(list2.size(), 1);
@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE(test_copy_assignment)
 BOOST_AUTO_TEST_CASE(test_move_assignment)
 {
   petrov::List< int > list1;
-  list1.pushBack(8);
+  list1.push_back(8);
 
   petrov::List< int > list2;
   list2 = std::move(list1);
@@ -171,8 +171,8 @@ BOOST_AUTO_TEST_CASE(test_move_assignment)
 BOOST_AUTO_TEST_CASE(test_const_iterator)
 {
   petrov::List< int > list;
-  list.pushBack(1);
-  list.pushBack(2);
+  list.push_back(1);
+  list.push_back(2);
 
   const petrov::List< int > & const_list = list;
   petrov::LCIter< int > it = const_list.cbegin();
@@ -187,10 +187,10 @@ BOOST_AUTO_TEST_CASE(test_const_iterator)
 BOOST_AUTO_TEST_CASE(test_swap)
 {
   petrov::List< int > list1;
-  list1.pushBack(1);
+  list1.push_back(1);
   petrov::List< int > list2;
-  list2.pushBack(2);
-  list2.pushBack(3);
+  list2.push_back(2);
+  list2.push_back(3);
 
   list1.swap(list2);
 
