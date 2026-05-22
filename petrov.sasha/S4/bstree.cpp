@@ -10,3 +10,16 @@ petrov::BSTree< Key, Value, Compare >::Node::Node(
   left(nullptr),
   right(nullptr)
 {}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node* petrov::BSTree< Key, Value, Compare >::root() const noexcept {
+  return m_fake->left;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::BSTree< Key, Value, Compare >::setRoot(Node* node) noexcept {
+  m_fake->left = node;
+  if (node != nullptr) {
+    node->parent = m_fake;
+  }
+}
