@@ -1,5 +1,5 @@
-#ifndef BSTREE_HPP
-#define BSTREE_HPP
+#ifndef PETROV_S4_BSTREE_HPP
+#define PETROV_S4_BSTREE_HPP
 
 #include <cstddef>
 #include <functional>
@@ -13,7 +13,9 @@ namespace petrov
   template< class Key, class Value >
   class BSTIterator;
 
-  template< class Key, class Value, class Compare = std::less< Key > >
+  template< class Key,
+      class Value,
+      class Compare = std::less< Key > >
   class BSTree
   {
   public:
@@ -22,19 +24,19 @@ namespace petrov
     using const_iterator = BSTConstIterator< Key, Value >;
 
     BSTree();
-    BSTree(const BSTree & other);
-    BSTree(BSTree && other) noexcept;
+    BSTree(const BSTree& other);
+    BSTree(BSTree&& other) noexcept;
     ~BSTree();
 
-    BSTree & operator=(const BSTree & other);
-    BSTree & operator=(BSTree && other) noexcept;
+    BSTree& operator=(const BSTree& other);
+    BSTree& operator=(BSTree&& other) noexcept;
 
-    void push(const Key & key, const Value & value);
-    Value & get(const Key & key);
-    const Value & get(const Key & key) const;
-    Value drop(const Key & key);
+    void push(const Key& key, const Value& value);
+    Value& get(const Key& key);
+    const Value& get(const Key& key) const;
+    Value drop(const Key& key);
 
-    bool has(const Key & key) const noexcept;
+    bool has(const Key& key) const noexcept;
     bool empty() const noexcept;
 
     iterator begin() noexcept;
@@ -57,10 +59,7 @@ namespace petrov
       Node* parent;
       Node* left;
       Node* right;
-
-      Node(const Key & key,
-          const Value & value,
-          Node* parentNode);
+      Node(const Key& key, const Value& value, Node* parentNode);
     };
 
     Node* m_fake;
@@ -69,7 +68,7 @@ namespace petrov
     Node* root() const noexcept;
     void setRoot(Node* node) noexcept;
 
-    Node* findNode(const Key & key) const noexcept;
+    Node* findNode(const Key& key) const noexcept;
     Node* minimum(Node* node) const noexcept;
 
     void clear(Node* node) noexcept;
@@ -86,5 +85,35 @@ namespace petrov
     template< class K, class V >
     friend class BSTIterator;
   };
+
+  template< class Key, class Value >
+  class BSTConstIterator
+  {
+  public:
+    using value_type = std::pair< const Key, Value >;
+
+    BSTConstIterator() noexcept;
+
+    const value_type& operator*() const noexcept;
+    const value_type* operator->() const noexcept;
+
+    BSTConstIterator& operator++() noexcept;
+    BSTConstIterator operator++(int) noexcept;
+
+    bool operator==(const BSTConstIterator& other) const noexcept;
+    bool operator!=(const BSTConstIterator& other) const noexcept;
+
+  private:
+    using Node = typename BSTree< Key, Value, std::less< Key > >::Node;
+
+    Node* m_node;
+    Node* m_fake;
+
+    BSTConstIterator(Node* node, Node* fake) noexcept;
+
+    template< class K, class V, class C >
+    friend class BSTree;
+  };
 }
+
 #endif
