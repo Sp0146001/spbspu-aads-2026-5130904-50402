@@ -1,109 +1,105 @@
 #include "commands.hpp"
-#include "dictionary.hpp"
-
 #include <cstring>
-#include <istream>
-#include <ostream>
+#include <iostream>
 
-const petrov::Command COMMANDS[] =
+namespace petrov
 {
-  { "print", petrov::printCommand },
-  { "complement", petrov::complementCommand },
-  { "intersect", petrov::intersectCommand },
-  { "union", petrov::unionCommand }
-};
-const std::size_t COMMAND_COUNT = sizeof(COMMANDS) / sizeof(COMMANDS[0]);
+  const Command COMMANDS[] = {
+    { "print", printCommand },
+    { "complement", complementCommand },
+    { "intersect", intersectCommand },
+    { "union", unionCommand }
+  };
+  const std::size_t COMMAND_COUNT = sizeof(COMMANDS) / sizeof(COMMANDS[0]);
+}
 
-const petrov::Command* petrov::findCommand(const char* name) noexcept {
+const petrov::Command* petrov::findCommand(const std::string& name) {
   for (std::size_t i = 0; i < COMMAND_COUNT; ++i) {
-    if (std::strcmp(COMMANDS[i].name, name) == 0) {
+    if (name == COMMANDS[i].name) {
       return &COMMANDS[i];
     }
   }
   return nullptr;
 }
-
-void petrov::printCommand(Storage& storage, std::istream & in, std::ostream & out) {
+void petrov::printCommand(Storage& storage, std::istream& in, std::ostream& out) {
   std::string dataset;
-  if (!(in >> dataset)) {
+  if (!(in >> dataset) || !storage.has(dataset)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
-  if (!storage.has(dataset)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
-  }
-  const Dictionary & dict = storage.get(dataset);
-  if (dict.empty()) {
+  const InnerTree& tree = storage.get(dataset);
+  if (tree.empty()) {
     out << "<EMPTY>" << '\n';
     return;
   }
   out << dataset;
-  for (Dictionary::const_iterator it = dict.begin(); it != dict.end(); ++it) {
-    out << ' ' << it->first << ' ' << it->second;
+  for (InnerTree::const_iterator it = tree.begin(); it != tree.end(); ++it) {
+    out << ' ' << it->first
+        << ' ' << it->second;
   }
   out << '\n';
 }
 
-void petrov::complementCommand(Storage & storage, std::istream & in, std::ostream & out) {
+void petrov::complementCommand(Storage& storage, std::istream& in, std::ostream& out) {
   std::string newName;
   std::string leftName;
   std::string rightName;
-
-  if (!(in >> newName >> leftName >> rightName)) {
+  if (!(in >> newName >> leftName >> rightName) ||
+      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
-  if (!storage.has(leftName) || !storage.has(rightName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
+  const InnerTree& left = storage.get(leftName);
+  const InnerTree& right = storage.get(rightName);
+  InnerTree result;
+  for (InnerTree::const_iterator it = left.begin(); it != left.end(); ++it) {
+    if (!right.has(it->first)) {
+      result.push(it->first, it->second);
+    }
   }
-  if (storage.has(newName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
-  }
-  Dictionary result = storage.get(leftName).complement(storage.get(rightName));
-  storage.insert(newName, result);
+  storage.push(newName, result);
 }
 
-void petrov::intersectCommand(Storage & storage, std::istream & in, std::ostream & out) {
+void petrov::intersectCommand(Storage& storage, std::istream& in, std::ostream& out) {
   std::string newName;
   std::string leftName;
   std::string rightName;
-  if (!(in >> newName >> leftName >> rightName)) {
+  if (!(in >> newName >> leftName >> rightName) ||
+      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
-  if (!storage.has(leftName) || !storage.has(rightName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
+  const InnerTree& left = storage.get(leftName);
+  const InnerTree& right = storage.get(rightName);
+  InnerTree result;
+  for (InnerTree::const_iterator it = left.begin(); it != left.end(); ++it) {
+    if (right.has(it->first)) {
+      result.push(it->first, it->second);
+    }
   }
-  if (storage.has(newName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
-  }
-  Dictionary result = storage.get(leftName).intersect(storage.get(rightName));
-  storage.insert(newName, result);
+  storage.push(newName, result);
 }
 
-void petrov::unionCommand(Storage & storage, std::istream & in, std::ostream & out) {
+void petrov::unionCommand(Storage& storage, std::istream& in, std::ostream& out) {
   std::string newName;
   std::string leftName;
   std::string rightName;
-  if (!(in >> newName >> leftName >> rightName)) {
+  if (!(in >> newName >> leftName >> rightName) ||
+      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
-  if (!storage.has(leftName) || !storage.has(rightName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
+  const InnerTree& left = storage.get(leftName);
+  const InnerTree& right = storage.get(rightName);
+  InnerTree result;
+  for (InnerTree::const_iterator it = left.begin(); it != left.end(); ++it) {
+    result.push(it->first, it->second);
   }
-  if (storage.has(newName)) {
-    out << "<INVALID COMMAND>" << '\n';
-    return;
+  for (InnerTree::const_iterator it = right.begin(); it != right.end(); ++it) {
+    if (!result.has(it->first)) {
+      result.push(it->first, it->second);
+    }
   }
-  Dictionary result = storage.get(leftName).unite(storage.get(rightName));
-  storage.insert(newName, result);
+  storage.push(newName, result);
 }
-
 
