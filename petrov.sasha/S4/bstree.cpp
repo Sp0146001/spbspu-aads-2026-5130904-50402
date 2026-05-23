@@ -319,3 +319,16 @@ petrov::BSTree< Key, Value, Compare >::rotateLargeRight(const_iterator it) {
   rotateLeftNode(node->left);
   return const_iterator(rotateRightNode(node), m_fake);
 }
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node *
+petrov::BSTree< Key, Value, Compare >::minimum(Node * node) const noexcept {
+  if (node == nullptr) {
+    return nullptr;
+  }
+  while (node->left != nullptr) {
+    node = node->left;
+  }
+  return node;
+}
+
