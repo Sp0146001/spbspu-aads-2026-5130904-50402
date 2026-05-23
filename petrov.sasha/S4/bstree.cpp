@@ -129,4 +129,45 @@ const Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) const {
   return node->data.second;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node*
+petrov::BSTree< Key, Value, Compare >::rotateLeftNode(Node * node) {
+  Node* newRoot = node->right;
+  node->right = newRoot->left;
+  if (newRoot->left != nullptr) {
+    newRoot->left->parent = node;
+  }
+  newRoot->parent = node->parent;
+  if (node->parent->left == node) {
+    node->parent->left = newRoot;
+  } else {
+    node->parent->right = newRoot;
+  }
+  newRoot->left = node;
+  node->parent = newRoot;
+  return newRoot;
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node*
+petrov::BSTree< Key, Value, Compare >::rotateRightNode(Node* node)
+{
+  Node* newRoot = node->left;
+
+  node->left = newRoot->right;
+
+  if (newRoot->right != nullptr) {
+    newRoot->right->parent = node;
+  }
+  newRoot->parent = node->parent;
+  if (node->parent->left == node) {
+    node->parent->left = newRoot;
+  } else {
+    node->parent->right = newRoot;
+  }
+  newRoot->right = node;
+  node->parent = newRoot;
+  return newRoot;
+}
+
 

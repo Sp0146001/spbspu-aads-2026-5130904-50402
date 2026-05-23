@@ -22,19 +22,19 @@ namespace petrov
     using const_iterator = BSTConstIterator< Key, Value >;
 
     BSTree();
-    BSTree(const BSTree & other);
+    BSTree(const BSTree& other);
     BSTree(BSTree&& other) noexcept;
     ~BSTree();
 
-    BSTree & operator=(const BSTree & other);
-    BSTree & operator=(BSTree&& other) noexcept;
+    BSTree& operator=(const BSTree& other);
+    BSTree& operator=(BSTree&& other) noexcept;
 
-    void push(const Key & key, const Value & value);
-    Value & get(const Key & key);
-    const Value & get(const Key & key) const;
-    Value drop(const Key & key);
+    void push(const Key& key, const Value& value);
+    Value& get(const Key& key);
+    const Value& get(const Key& key) const;
+    Value drop(const Key& key);
 
-    bool has(const Key & key) const noexcept;
+    bool has(const Key& key) const noexcept;
     bool empty() const noexcept;
 
     iterator begin() noexcept;
@@ -58,7 +58,7 @@ namespace petrov
       Node* left;
       Node* right;
 
-      Node(const Key & key, const Value & value, Node* parentNode);
+      Node(const Key& key, const Value& value, Node* parentNode);
     };
 
     Node* m_fake;
@@ -67,7 +67,7 @@ namespace petrov
     Node* root() const noexcept;
     void setRoot(Node* node) noexcept;
 
-    Node* findNode(const Key & key) const noexcept;
+    Node* findNode(const Key& key) const noexcept;
     Node* minimum(Node* node) const noexcept;
 
     void clear(Node* node) noexcept;
@@ -93,14 +93,14 @@ namespace petrov
 
     BSTConstIterator() noexcept;
 
-    const value_type & operator*() const noexcept;
+    const value_type& operator*() const noexcept;
     const value_type* operator->() const noexcept;
 
-    BSTConstIterator & operator++() noexcept;
+    BSTConstIterator& operator++() noexcept;
     BSTConstIterator operator++(int) noexcept;
 
-    bool operator==(const BSTConstIterator & other) const noexcept;
-    bool operator!=(const BSTConstIterator & other) const noexcept;
+    bool operator==(const BSTConstIterator& other) const noexcept;
+    bool operator!=(const BSTConstIterator& other) const noexcept;
 
   private:
     using Node = typename BSTree< Key, Value, std::less< Key > >::Node;
@@ -122,14 +122,14 @@ namespace petrov
 
     BSTIterator() noexcept;
 
-    value_type & operator*() const noexcept;
+    value_type& operator*() const noexcept;
     value_type* operator->() const noexcept;
 
-    BSTIterator & operator++() noexcept;
+    BSTIterator& operator++() noexcept;
     BSTIterator operator++(int) noexcept;
 
-    bool operator==(const BSTIterator & other) const noexcept;
-    bool operator!=(const BSTIterator & other) const noexcept;
+    bool operator==(const BSTIterator& other) const noexcept;
+    bool operator!=(const BSTIterator& other) const noexcept;
 
     operator BSTConstIterator< Key, Value >() const noexcept;
 
