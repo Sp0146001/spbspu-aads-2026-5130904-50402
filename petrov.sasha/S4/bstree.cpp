@@ -307,7 +307,7 @@ petrov::BSTree< Key, Value, Compare >::rotateRight(const_iterator it) {
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::const_iterator
 petrov::BSTree< Key, Value, Compare >::rotateLargeLeft(const_iterator it) {
-  Node * node = it.m_node;
+  Node* node = it.m_node;
   rotateRightNode(node->right);
   return const_iterator(rotateLeftNode(node), m_fake);
 }
@@ -315,14 +315,14 @@ petrov::BSTree< Key, Value, Compare >::rotateLargeLeft(const_iterator it) {
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::const_iterator
 petrov::BSTree< Key, Value, Compare >::rotateLargeRight(const_iterator it) {
-  Node * node = it.m_node;
+  Node* node = it.m_node;
   rotateLeftNode(node->left);
   return const_iterator(rotateRightNode(node), m_fake);
 }
 
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::Node *
-petrov::BSTree< Key, Value, Compare >::minimum(Node * node) const noexcept {
+petrov::BSTree< Key, Value, Compare >::minimum(Node* node) const noexcept {
   if (node == nullptr) {
     return nullptr;
   }
@@ -356,4 +356,28 @@ petrov::BSTree< Key, Value, Compare >::end() const noexcept {
   return const_iterator(nullptr, m_fake);
 }
 
-
+template< class Key, class Value, class Compare >
+Value petrov::BSTree< Key, Value, Compare >::drop(const Key& key) {
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  Value result = node->data.second;
+  if (node->left != nullptr && node->right != nullptr) {
+    Node* successor = minimum(node->right);
+    const_cast< Key& >(node->data.first) = successor->data.first;
+    node->data.second = successor->data.second;
+    node = successor;
+  }
+  Node* child = (node->left != nullptr) ? node->left : node->right;
+  if (child != nullptr) {
+    child->parent = node->parent;
+  }
+  if (node->parent->left == node) {
+    node->parent->left = child;
+  } else {
+    node->parent->right = child;
+  }
+  delete node;
+  return result;
+}
