@@ -292,4 +292,30 @@ petrov::BSTree< Key, Value, Compare >::rotateRightNode(Node* node)
   return newRoot;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::rotateLeft(const_iterator it) {
+  return const_iterator(rotateLeftNode(it.m_node), m_fake);
+}
 
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::rotateRight(const_iterator it) {
+  return const_iterator(rotateRightNode(it.m_node), m_fake);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::rotateLargeLeft(const_iterator it) {
+  Node * node = it.m_node;
+  rotateRightNode(node->right);
+  return const_iterator(rotateLeftNode(node), m_fake);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::rotateLargeRight(const_iterator it) {
+  Node * node = it.m_node;
+  rotateLeftNode(node->left);
+  return const_iterator(rotateRightNode(node), m_fake);
+}
