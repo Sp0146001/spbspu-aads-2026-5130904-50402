@@ -108,7 +108,7 @@ template< class Key, class Value >
 petrov::BSTIterator< Key, Value >&
 petrov::BSTIterator< Key, Value >::operator++() noexcept {
   BSTConstIterator< Key, Value > temp(m_node, m_fake);
-  ++temp;F
+  ++temp;
   m_node = temp.m_node;
   return *this;
 }
@@ -191,6 +191,11 @@ std::size_t petrov::BSTree< Key, Value, Compare >::height() const noexcept {
 }
 
 template< class Key, class Value, class Compare >
+std::size_t petrov::BSTree< Key, Value, Compare >::height(const_iterator it) const noexcept {
+  return height(it.m_node);
+}
+
+template< class Key, class Value, class Compare >
 void petrov::BSTree< Key, Value, Compare >::push(const Key& key, const Value& value) {
   if (root() == nullptr)
   {
@@ -249,6 +254,11 @@ const Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) const {
     throw std::out_of_range("Key not found");
   }
   return node->data.second;
+}
+
+template< class Key, class Value, class Compare >
+bool petrov::BSTree< Key, Value, Compare >::has(const Key& key) const noexcept {
+  return findNode(key) != nullptr;
 }
 
 template< class Key, class Value, class Compare >
