@@ -332,3 +332,28 @@ petrov::BSTree< Key, Value, Compare >::minimum(Node * node) const noexcept {
   return node;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::iterator
+petrov::BSTree< Key, Value, Compare >::begin() noexcept {
+  return iterator(minimum(root()), m_fake);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::iterator
+petrov::BSTree< Key, Value, Compare >::end() noexcept {
+  return iterator(nullptr, m_fake);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::begin() const noexcept {
+  return const_iterator(minimum(root()), m_fake);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::const_iterator
+petrov::BSTree< Key, Value, Compare >::end() const noexcept {
+  return const_iterator(nullptr, m_fake);
+}
+
+
