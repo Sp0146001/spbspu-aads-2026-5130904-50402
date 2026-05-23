@@ -11,6 +11,130 @@ petrov::BSTree< Key, Value, Compare >::Node::Node(
   right(nullptr)
 {}
 
+template< class Key, class Value >
+petrov::BSTConstIterator< Key, Value >::BSTConstIterator() noexcept:
+  m_node(nullptr),
+  m_fake(nullptr)
+{}
+
+template< class Key, class Value >
+petrov::BSTConstIterator< Key, Value >::BSTConstIterator(
+    Node* node,
+    Node* fake) noexcept:
+  m_node(node),
+  m_fake(fake)
+{}
+
+template< class Key, class Value >
+const typename petrov::BSTConstIterator< Key, Value >::value_type &
+petrov::BSTConstIterator< Key, Value >::operator*() const noexcept
+{
+  return m_node->data;
+}
+
+template< class Key, class Value >
+const typename petrov::BSTConstIterator< Key, Value >::value_type *
+petrov::BSTConstIterator< Key, Value >::operator->() const noexcept
+{
+  return &m_node->data;
+}
+
+template< class Key, class Value >
+petrov::BSTConstIterator< Key, Value > &
+petrov::BSTConstIterator< Key, Value >::operator++() noexcept
+{
+  if (m_node == nullptr) {
+    return *this;
+  }
+
+  if (m_node->right != nullptr) {
+    m_node = m_node->right;
+    while (m_node->left != nullptr) {
+      m_node = m_node->left;
+    }
+  } else {
+    Node* parent = m_node->parent;
+    while (parent != m_fake && m_node == parent->right) {
+      m_node = parent;
+      parent = parent->parent;
+    }
+    m_node = (parent == m_fake) ? nullptr : parent;
+  }
+  return *this;
+}
+
+template< class Key, class Value >
+petrov::BSTConstIterator< Key, Value >
+petrov::BSTConstIterator< Key, Value >::operator++(int) noexcept {
+  BSTConstIterator temp(*this);
+  ++(*this);
+  return temp;
+}
+
+template< class Key, class Value >
+bool petrov::BSTConstIterator< Key, Value >::operator==(const BSTConstIterator& other) const noexcept {
+  return m_node == other.m_node;
+}
+
+template< class Key, class Value >
+bool petrov::BSTConstIterator< Key, Value >::operator!=(const BSTConstIterator& other) const noexcept {
+  return m_node != other.m_node;
+}
+
+template< class Key, class Value >
+petrov::BSTIterator< Key, Value >::BSTIterator() noexcept:
+  m_node(nullptr),
+  m_fake(nullptr)
+{}
+
+template< class Key, class Value >
+petrov::BSTIterator< Key, Value >::BSTIterator(Node* node, Node* fake) noexcept:
+  m_node(node),
+  m_fake(fake)
+{}
+
+template< class Key, class Value >
+typename petrov::BSTIterator< Key, Value >::value_type& petrov::BSTIterator< Key, Value >::operator*() const noexcept {
+  return m_node->data;
+}
+
+template< class Key, class Value >
+typename petrov::BSTIterator< Key, Value >::value_type*
+petrov::BSTIterator< Key, Value >::operator->() const noexcept {
+  return &m_node->data;
+}
+
+template< class Key, class Value >
+petrov::BSTIterator< Key, Value >&
+petrov::BSTIterator< Key, Value >::operator++() noexcept {
+  BSTConstIterator< Key, Value > temp(m_node, m_fake);
+  ++temp;F
+  m_node = temp.m_node;
+  return *this;
+}
+
+template< class Key, class Value >
+petrov::BSTIterator< Key, Value > petrov::BSTIterator< Key, Value >::operator++(int) noexcept {
+  BSTIterator temp(*this);
+  ++(*this);
+  return temp;
+}
+
+template< class Key, class Value >
+bool petrov::BSTIterator< Key, Value >::operator==(const BSTIterator& other) const noexcept {
+  return m_node == other.m_node;
+}
+
+template< class Key, class Value >
+bool petrov::BSTIterator< Key, Value >::operator!=(const BSTIterator& other) const noexcept {
+  return m_node != other.m_node;
+}
+
+template< class Key, class Value >
+petrov::BSTIterator< Key, Value >::operator petrov::BSTConstIterator< Key, Value >() const noexcept {
+  return BSTConstIterator< Key, Value >(m_node, m_fake);
+}
+
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::Node* petrov::BSTree< Key, Value, Compare >::root() const noexcept {
   return m_fake->left;
@@ -41,11 +165,9 @@ petrov::BSTree< Key, Value, Compare >::~BSTree() {
 
 template< class Key, class Value, class Compare >
 void petrov::BSTree< Key, Value, Compare >::clear(Node* node) noexcept {
-  if (node == nullptr)
-  {
+  if (node == nullptr) {
     return;
   }
-
   clear(node->left);
   clear(node->right);
   delete node;
@@ -75,8 +197,8 @@ void petrov::BSTree< Key, Value, Compare >::push(const Key& key, const Value& va
     setRoot(new Node(key, value, m_fake));
     return;
   }
-  Node * parent = m_fake;
-  Node * current = root();
+  Node* parent = m_fake;
+  Node* current = root();
   while (current != nullptr) {
     parent = current;
     if (m_compare(key, current->data.first)) {
@@ -131,7 +253,7 @@ const Value& petrov::BSTree< Key, Value, Compare >::get(const Key& key) const {
 
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::Node*
-petrov::BSTree< Key, Value, Compare >::rotateLeftNode(Node * node) {
+petrov::BSTree< Key, Value, Compare >::rotateLeftNode(Node* node) {
   Node* newRoot = node->right;
   node->right = newRoot->left;
   if (newRoot->left != nullptr) {
