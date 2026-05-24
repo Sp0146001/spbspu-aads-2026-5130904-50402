@@ -34,8 +34,7 @@ void petrov::printCommand(Storage& storage, std::istream& in, std::ostream& out)
   }
   out << dataset;
   for (InnerTree::const_iterator it = tree.begin(); it != tree.end(); ++it) {
-    out << ' ' << it->first
-        << ' ' << it->second;
+    out << ' ' << it->first << ' ' << it->second;
   }
   out << '\n';
 }
@@ -44,8 +43,7 @@ void petrov::complementCommand(Storage& storage, std::istream& in, std::ostream&
   std::string newName;
   std::string leftName;
   std::string rightName;
-  if (!(in >> newName >> leftName >> rightName) ||
-      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
+  if (!(in >> newName >> leftName >> rightName) || !storage.has(leftName) || !storage.has(rightName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
@@ -64,8 +62,7 @@ void petrov::intersectCommand(Storage& storage, std::istream& in, std::ostream& 
   std::string newName;
   std::string leftName;
   std::string rightName;
-  if (!(in >> newName >> leftName >> rightName) ||
-      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
+  if (!(in >> newName >> leftName >> rightName) || !storage.has(leftName) || !storage.has(rightName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
@@ -84,8 +81,7 @@ void petrov::unionCommand(Storage& storage, std::istream& in, std::ostream& out)
   std::string newName;
   std::string leftName;
   std::string rightName;
-  if (!(in >> newName >> leftName >> rightName) ||
-      !storage.has(leftName) || !storage.has(rightName) || storage.has(newName)) {
+  if (!(in >> newName >> leftName >> rightName) || !storage.has(leftName) || !storage.has(rightName)) {
     out << "<INVALID COMMAND>" << '\n';
     return;
   }
