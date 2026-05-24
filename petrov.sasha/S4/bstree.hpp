@@ -112,6 +112,8 @@ namespace petrov
 
     template< class K, class V, class C >
     friend class BSTree;
+    template< class K, class V >
+    friend class BSTIterator;
   };
 
   template< class Key, class Value >
