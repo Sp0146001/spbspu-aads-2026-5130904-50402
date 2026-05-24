@@ -317,6 +317,11 @@ bool petrov::BSTree< Key, Value, Compare >::has(const Key& key) const noexcept {
 }
 
 template< class Key, class Value, class Compare >
+bool petrov::BSTree< Key, Value, Compare >::empty() const noexcept {
+  return root() == nullptr;
+}
+
+template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::Node*
 petrov::BSTree< Key, Value, Compare >::rotateLeftNode(Node* node) {
   Node* newRoot = node->right;
