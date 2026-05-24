@@ -12,6 +12,61 @@ petrov::BSTree< Key, Value, Compare >::Node::Node(
   right(nullptr)
 {}
 
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >::BSTree(const BSTree & other):
+  m_fake(new Node(Key(), Value(), nullptr)),
+  m_compare(other.m_compare)
+{
+  m_fake->left = copy(other.root(), m_fake);
+  m_fake->right = nullptr;
+}
+
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >::BSTree(BSTree && other) noexcept:
+  m_fake(other.m_fake),
+  m_compare(other.m_compare)
+{
+  other.m_fake = new Node(Key(), Value(), nullptr);
+  other.m_fake->left = nullptr;
+  other.m_fake->right = nullptr;
+}
+
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(const BSTree & other) {
+  if (this != &other) {
+    clear(root());
+    m_fake->left = copy(other.root(), m_fake);
+    m_compare = other.m_compare;
+  }
+  return *this;
+}
+
+template< class Key, class Value, class Compare >
+petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(BSTree && other) noexcept {
+  if (this != &other) {
+    clear(root());
+    delete m_fake;
+    m_fake = other.m_fake;
+    m_compare = other.m_compare;
+    other.m_fake = new Node(Key(), Value(), nullptr);
+    other.m_fake->left = nullptr;
+    other.m_fake->right = nullptr;
+  }
+  return *this;
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::BSTree< Key, Value, Compare >::Node*
+petrov::BSTree< Key, Value, Compare >::copy(Node* node, Node* parent) {
+  if (node == nullptr) {
+    return nullptr;
+  }
+  Node* newNode = new Node(node->data.first, node->data.second, parent);
+  newNode->left = copy(node->left, newNode);
+  newNode->right = copy(node->right, newNode);
+  return newNode;
+}
+
 template< class Key, class Value >
 petrov::BSTConstIterator< Key, Value >::BSTConstIterator() noexcept:
   m_node(nullptr),
@@ -47,7 +102,6 @@ petrov::BSTConstIterator< Key, Value >::operator++() noexcept
   if (m_node == nullptr) {
     return *this;
   }
-
   if (m_node->right != nullptr) {
     m_node = m_node->right;
     while (m_node->left != nullptr) {
