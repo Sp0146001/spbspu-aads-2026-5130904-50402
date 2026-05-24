@@ -1,6 +1,7 @@
 #include "bstree.hpp"
 #include <algorithm>
 #include <stdexcept>
+#include <string>
 
 template< class Key, class Value, class Compare >
 petrov::BSTree< Key, Value, Compare >::Node::Node(
@@ -391,3 +392,22 @@ Value petrov::BSTree< Key, Value, Compare >::drop(const Key& key) {
   delete node;
   return result;
 }
+
+template class petrov::BSTConstIterator< int, std::string >;
+template class petrov::BSTIterator< int, std::string >;
+template class petrov::BSTree< int, std::string >;
+
+template class petrov::BSTConstIterator<
+  std::string,
+  petrov::BSTree< int, std::string >
+>;
+template class petrov::BSTIterator<
+  std::string,
+  petrov::BSTree< int, std::string >
+>;
+template class petrov::BSTree<
+  std::string,
+  petrov::BSTree< int, std::string >
+>;
+
+
