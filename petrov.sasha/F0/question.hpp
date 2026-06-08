@@ -36,6 +36,8 @@ namespace petrov
       tags()
     {}
   };
+
+  std::string typeName(const Question& question);
 }
 
 #endif
