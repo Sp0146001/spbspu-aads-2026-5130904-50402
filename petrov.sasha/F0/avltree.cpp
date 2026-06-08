@@ -145,4 +145,34 @@ std::size_t petrov::AvlTree< Key, Value, Compare >::count(Node* node) const noex
   return count(node->left) + count(node->right) + 1;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::findNode(const Key& key) const noexcept
+{
+  Node* current = root();
+  while (current != nullptr) {
+    if (compare_(key, current->data.first)) {
+      current = current->left;
+    } else if (compare_(current->data.first, key)) {
+      current = current->right;
+    } else {
+      return current;
+    }
+  }
+  return nullptr;
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::minimum(Node* node) const noexcept
+{
+  if (node == nullptr) {
+    return nullptr;
+  }
+  while (node->left != nullptr) {
+    node = node->left;
+  }
+  return node;
+}
+
 
