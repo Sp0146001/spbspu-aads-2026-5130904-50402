@@ -366,4 +366,46 @@ std::size_t petrov::AvlTree< Key, Value, Compare >::size() const noexcept
   return size_;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::iterator
+petrov::AvlTree< Key, Value, Compare >::begin() noexcept
+{
+  return iterator(minimum(root()), fake_);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::iterator
+petrov::AvlTree< Key, Value, Compare >::end() noexcept
+{
+  return iterator(nullptr, fake_);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::const_iterator
+petrov::AvlTree< Key, Value, Compare >::begin() const noexcept
+{
+  return const_iterator(minimum(root()), fake_);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::const_iterator
+petrov::AvlTree< Key, Value, Compare >::end() const noexcept
+{
+  return const_iterator(nullptr, fake_);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::iterator
+petrov::AvlTree< Key, Value, Compare >::find(const Key& key) noexcept
+{
+  return iterator(findNode(key), fake_);
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::const_iterator
+petrov::AvlTree< Key, Value, Compare >::find(const Key& key) const noexcept
+{
+  return const_iterator(findNode(key), fake_);
+}
+
 
