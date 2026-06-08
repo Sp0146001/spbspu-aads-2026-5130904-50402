@@ -426,4 +426,18 @@ petrov::AvlConstIterator< Key, Value >::AvlConstIterator(Node* node, Node* fake)
   fake_(fake)
 {}
 
+template< class Key, class Value >
+const typename petrov::AvlConstIterator< Key, Value >::value_type&
+petrov::AvlConstIterator< Key, Value >::operator*() const noexcept
+{
+  return node_->data;
+}
+
+template< class Key, class Value >
+const typename petrov::AvlConstIterator< Key, Value >::value_type*
+petrov::AvlConstIterator< Key, Value >::operator->() const noexcept
+{
+  return std::addressof(node_->data);
+}
+
 
