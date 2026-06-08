@@ -482,4 +482,16 @@ bool petrov::AvlConstIterator< Key, Value >::operator!=(const AvlConstIterator& 
   return node_ != other.node_;
 }
 
+template< class Key, class Value >
+petrov::AvlIterator< Key, Value >::AvlIterator() noexcept:
+  node_(nullptr),
+  fake_(nullptr)
+{}
+
+template< class Key, class Value >
+petrov::AvlIterator< Key, Value >::AvlIterator(Node* node, Node* fake) noexcept:
+  node_(node),
+  fake_(fake)
+{}
+
 
