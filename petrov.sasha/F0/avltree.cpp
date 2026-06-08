@@ -470,4 +470,16 @@ petrov::AvlConstIterator< Key, Value > petrov::AvlConstIterator< Key, Value >::o
   return temp;
 }
 
+template< class Key, class Value >
+bool petrov::AvlConstIterator< Key, Value >::operator==(const AvlConstIterator& other) const noexcept
+{
+  return node_ == other.node_;
+}
+
+template< class Key, class Value >
+bool petrov::AvlConstIterator< Key, Value >::operator!=(const AvlConstIterator& other) const noexcept
+{
+  return node_ != other.node_;
+}
+
 
