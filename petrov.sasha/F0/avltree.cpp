@@ -523,4 +523,22 @@ petrov::AvlIterator< Key, Value > petrov::AvlIterator< Key, Value >::operator++(
   return temp;
 }
 
+template< class Key, class Value >
+bool petrov::AvlIterator< Key, Value >::operator==(const AvlIterator& other) const noexcept
+{
+  return node_ == other.node_;
+}
+
+template< class Key, class Value >
+bool petrov::AvlIterator< Key, Value >::operator!=(const AvlIterator& other) const noexcept
+{
+  return node_ != other.node_;
+}
+
+template< class Key, class Value >
+petrov::AvlIterator< Key, Value >::operator petrov::AvlConstIterator< Key, Value >() const noexcept
+{
+  return AvlConstIterator< Key, Value >(node_, fake_);
+}
+
 
