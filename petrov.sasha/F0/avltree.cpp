@@ -87,3 +87,19 @@ petrov::AvlTree< Key, Value, Compare >::operator=(AvlTree&& other) noexcept
   return *this;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::root() const noexcept
+{
+  return fake_->left;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::setRoot(Node* node) noexcept
+{
+  fake_->left = node;
+  if (node != nullptr) {
+    node->parent = fake_;
+  }
+}
+
