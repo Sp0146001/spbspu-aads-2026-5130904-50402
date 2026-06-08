@@ -440,4 +440,34 @@ petrov::AvlConstIterator< Key, Value >::operator->() const noexcept
   return std::addressof(node_->data);
 }
 
+template< class Key, class Value >
+petrov::AvlConstIterator< Key, Value >& petrov::AvlConstIterator< Key, Value >::operator++() noexcept
+{
+  if (node_ == nullptr) {
+    return *this;
+  }
+  if (node_->right != nullptr) {
+    node_ = node_->right;
+    while (node_->left != nullptr) {
+      node_ = node_->left;
+    }
+  } else {
+    Node* parent = node_->parent;
+    while (parent != fake_ && node_ == parent->right) {
+      node_ = parent;
+      parent = parent->parent;
+    }
+    node_ = (parent == fake_) ? nullptr : parent;
+  }
+  return *this;
+}
+
+template< class Key, class Value >
+petrov::AvlConstIterator< Key, Value > petrov::AvlConstIterator< Key, Value >::operator++(int) noexcept
+{
+  AvlConstIterator temp(*this);
+  ++(*this);
+  return temp;
+}
+
 
