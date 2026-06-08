@@ -122,4 +122,18 @@ void petrov::AvlTree< Key, Value, Compare >::clear() noexcept
   size_ = 0;
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::copy(Node* node, Node* parent)
+{
+  if (node == nullptr) {
+    return nullptr;
+  }
+  Node* newNode = new Node(node->data.first, node->data.second, parent);
+  newNode->height = node->height;
+  newNode->left = copy(node->left, newNode);
+  newNode->right = copy(node->right, newNode);
+  return newNode;
+}
+
 
