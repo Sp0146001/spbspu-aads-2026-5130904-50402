@@ -201,4 +201,70 @@ int petrov::AvlTree< Key, Value, Compare >::balanceFactor(Node* node) const noex
   return nodeHeight(node->left) - nodeHeight(node->right);
 }
 
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::rotateLeftNode(Node* node)
+{
+  Node* newRoot = node->right;
+  node->right = newRoot->left;
+  if (newRoot->left != nullptr) {
+    newRoot->left->parent = node;
+  }
+  newRoot->parent = node->parent;
+  if (node->parent->left == node) {
+    node->parent->left = newRoot;
+  } else {
+    node->parent->right = newRoot;
+  }
+  newRoot->left = node;
+  node->parent = newRoot;
+  updateHeight(node);
+  updateHeight(newRoot);
+  return newRoot;
+}
+
+template< class Key, class Value, class Compare >
+typename petrov::AvlTree< Key, Value, Compare >::Node*
+petrov::AvlTree< Key, Value, Compare >::rotateRightNode(Node* node)
+{
+  Node* newRoot = node->left;
+  node->left = newRoot->right;
+  if (newRoot->right != nullptr) {
+    newRoot->right->parent = node;
+  }
+  newRoot->parent = node->parent;
+  if (node->parent->left == node) {
+    node->parent->left = newRoot;
+  } else {
+    node->parent->right = newRoot;
+  }
+  newRoot->right = node;
+  node->parent = newRoot;
+  updateHeight(node);
+  updateHeight(newRoot);
+  return newRoot;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::rebalanceFrom(Node* node)
+{
+  while (node != fake_) {
+    updateHeight(node);
+    Node* parent = node->parent;
+    const int balance = balanceFactor(node);
+    if (balance > 1) {
+      if (balanceFactor(node->left) < 0) {
+        rotateLeftNode(node->left);
+      }
+      rotateRightNode(node);
+    } else if (balance < -1) {
+      if (balanceFactor(node->right) > 0) {
+        rotateRightNode(node->right);
+      }
+      rotateLeftNode(node);
+    }
+    node = parent;
+  }
+}
+
 
