@@ -38,6 +38,9 @@ namespace petrov
   };
 
   std::string typeName(const Question& question);
+
+  bool letterToIndex(const std::string& letter, std::size_t& index);
+  char indexToLetter(std::size_t index);
 }
 
 #endif
