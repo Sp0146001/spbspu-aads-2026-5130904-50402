@@ -298,4 +298,24 @@ void petrov::AvlTree< Key, Value, Compare >::push(const Key& key, const Value& v
   rebalanceFrom(parent);
 }
 
+template< class Key, class Value, class Compare >
+Value& petrov::AvlTree< Key, Value, Compare >::get(const Key& key)
+{
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  return node->data.second;
+}
+
+template< class Key, class Value, class Compare >
+const Value& petrov::AvlTree< Key, Value, Compare >::get(const Key& key) const
+{
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  return node->data.second;
+}
+
 
