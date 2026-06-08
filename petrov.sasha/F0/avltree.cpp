@@ -506,4 +506,21 @@ typename petrov::AvlIterator< Key, Value >::value_type* petrov::AvlIterator< Key
   return std::addressof(node_->data);
 }
 
+template< class Key, class Value >
+petrov::AvlIterator< Key, Value >& petrov::AvlIterator< Key, Value >::operator++() noexcept
+{
+  AvlConstIterator< Key, Value > temp(node_, fake_);
+  ++temp;
+  node_ = temp.node_;
+  return *this;
+}
+
+template< class Key, class Value >
+petrov::AvlIterator< Key, Value > petrov::AvlIterator< Key, Value >::operator++(int) noexcept
+{
+  AvlIterator temp(*this);
+  ++(*this);
+  return temp;
+}
+
 
