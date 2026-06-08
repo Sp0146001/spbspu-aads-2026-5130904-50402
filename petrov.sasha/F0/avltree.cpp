@@ -136,4 +136,13 @@ petrov::AvlTree< Key, Value, Compare >::copy(Node* node, Node* parent)
   return newNode;
 }
 
+template< class Key, class Value, class Compare >
+std::size_t petrov::AvlTree< Key, Value, Compare >::count(Node* node) const noexcept
+{
+  if (node == nullptr) {
+    return 0;
+  }
+  return count(node->left) + count(node->right) + 1;
+}
+
 
