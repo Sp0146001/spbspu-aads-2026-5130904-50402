@@ -37,4 +37,22 @@ char petrov::indexToLetter(std::size_t index)
   return static_cast< char >('A' + index);
 }
 
+void petrov::renderBody(std::ostream& out, const Question& question)
+{
+  if (question.type == QuestionType::matching) {
+    for (std::size_t i = 0; i < question.options.size(); ++i) {
+      out << (i + 1) << ". " << question.options[i] << "\n";
+    }
+    out << "\n";
+    for (std::size_t i = 0; i < question.rights.size(); ++i) {
+      out << indexToLetter(i) << ") " << question.rights[i] << "\n";
+    }
+    return;
+  }
+  for (std::size_t i = 0; i < question.options.size(); ++i) {
+    out << indexToLetter(i) << ") " << question.options[i] << "\n";
+  }
+}
+
+
 
