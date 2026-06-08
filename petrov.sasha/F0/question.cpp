@@ -54,5 +54,28 @@ void petrov::renderBody(std::ostream& out, const Question& question)
   }
 }
 
+std::string petrov::answerString(const Question& question)
+{
+  std::string result;
+  if (question.type == QuestionType::matching) {
+    for (std::size_t i = 0; i < question.options.size(); ++i) {
+      if (i != 0) {
+        result += ", ";
+      }
+      result += std::to_string(i + 1);
+      result += "-";
+      result += indexToLetter(i);
+    }
+    return result.empty() ? std::string("?") : result;
+  }
+  for (std::size_t i = 0; i < question.correct.size(); ++i) {
+    if (i != 0) {
+      result += " ";
+    }
+    result += indexToLetter(question.correct[i]);
+  }
+  return result.empty() ? std::string("?") : result;
+}
+
 
 
