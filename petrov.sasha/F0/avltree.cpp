@@ -56,3 +56,34 @@ petrov::AvlTree< Key, Value, Compare >::~AvlTree()
   delete fake_;
 }
 
+template< class Key, class Value, class Compare >
+petrov::AvlTree< Key, Value, Compare >&
+petrov::AvlTree< Key, Value, Compare >::operator=(const AvlTree& other)
+{
+  if (this != std::addressof(other)) {
+    clear(root());
+    fake_->left = copy(other.root(), fake_);
+    size_ = other.size_;
+    compare_ = other.compare_;
+  }
+  return *this;
+}
+
+template< class Key, class Value, class Compare >
+petrov::AvlTree< Key, Value, Compare >&
+petrov::AvlTree< Key, Value, Compare >::operator=(AvlTree&& other) noexcept
+{
+  if (this != std::addressof(other)) {
+    clear(root());
+    delete fake_;
+    fake_ = other.fake_;
+    size_ = other.size_;
+    compare_ = other.compare_;
+    other.fake_ = new Node(Key(), Value(), nullptr);
+    other.fake_->left = nullptr;
+    other.fake_->right = nullptr;
+    other.size_ = 0;
+  }
+  return *this;
+}
+
