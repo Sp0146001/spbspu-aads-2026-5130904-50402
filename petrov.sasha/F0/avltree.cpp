@@ -103,3 +103,23 @@ void petrov::AvlTree< Key, Value, Compare >::setRoot(Node* node) noexcept
   }
 }
 
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::clear(Node* node) noexcept
+{
+  if (node == nullptr) {
+    return;
+  }
+  clear(node->left);
+  clear(node->right);
+  delete node;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::clear() noexcept
+{
+  clear(root());
+  fake_->left = nullptr;
+  size_ = 0;
+}
+
+
