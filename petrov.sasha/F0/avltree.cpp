@@ -318,4 +318,34 @@ const Value& petrov::AvlTree< Key, Value, Compare >::get(const Key& key) const
   return node->data.second;
 }
 
+template< class Key, class Value, class Compare >
+Value petrov::AvlTree< Key, Value, Compare >::drop(const Key& key)
+{
+  Node* node = findNode(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found");
+  }
+  Value result = node->data.second;
+  if (node->left != nullptr && node->right != nullptr) {
+    Node* successor = minimum(node->right);
+    const_cast< Key& >(node->data.first) = successor->data.first;
+    node->data.second = successor->data.second;
+    node = successor;
+  }
+  Node* child = (node->left != nullptr) ? node->left : node->right;
+  if (child != nullptr) {
+    child->parent = node->parent;
+  }
+  Node* parent = node->parent;
+  if (parent->left == node) {
+    parent->left = child;
+  } else {
+    parent->right = child;
+  }
+  delete node;
+  size_ = size_ - 1;
+  rebalanceFrom(parent);
+  return result;
+}
+
 
