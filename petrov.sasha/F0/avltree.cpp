@@ -408,4 +408,10 @@ petrov::AvlTree< Key, Value, Compare >::find(const Key& key) const noexcept
   return const_iterator(findNode(key), fake_);
 }
 
+template< class Key, class Value, class Compare >
+std::size_t petrov::AvlTree< Key, Value, Compare >::height() const noexcept
+{
+  return static_cast< std::size_t >(nodeHeight(root()));
+}
+
 
