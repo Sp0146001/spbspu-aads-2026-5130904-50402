@@ -414,4 +414,16 @@ std::size_t petrov::AvlTree< Key, Value, Compare >::height() const noexcept
   return static_cast< std::size_t >(nodeHeight(root()));
 }
 
+template< class Key, class Value >
+petrov::AvlConstIterator< Key, Value >::AvlConstIterator() noexcept:
+  node_(nullptr),
+  fake_(nullptr)
+{}
+
+template< class Key, class Value >
+petrov::AvlConstIterator< Key, Value >::AvlConstIterator(Node* node, Node* fake) noexcept:
+  node_(node),
+  fake_(fake)
+{}
+
 
