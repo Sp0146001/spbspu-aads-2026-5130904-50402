@@ -267,4 +267,35 @@ void petrov::AvlTree< Key, Value, Compare >::rebalanceFrom(Node* node)
   }
 }
 
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::push(const Key& key, const Value& value)
+{
+  if (root() == nullptr) {
+    setRoot(new Node(key, value, fake_));
+    size_ = size_ + 1;
+    return;
+  }
+  Node* parent = fake_;
+  Node* current = root();
+  while (current != nullptr) {
+    parent = current;
+    if (compare_(key, current->data.first)) {
+      current = current->left;
+    } else if (compare_(current->data.first, key)) {
+      current = current->right;
+    } else {
+      current->data.second = value;
+      return;
+    }
+  }
+  Node* newNode = new Node(key, value, parent);
+  if (compare_(key, parent->data.first)) {
+    parent->left = newNode;
+  } else {
+    parent->right = newNode;
+  }
+  size_ = size_ + 1;
+  rebalanceFrom(parent);
+}
+
 
