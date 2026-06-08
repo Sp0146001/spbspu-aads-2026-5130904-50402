@@ -120,5 +120,36 @@ namespace petrov
     template< class K, class V >
     friend class AvlIterator;
   };
+
+  template< class Key, class Value >
+  class AvlIterator
+  {
+  public:
+    using value_type = std::pair< const Key, Value >;
+
+    AvlIterator() noexcept;
+
+    value_type& operator*() const noexcept;
+    value_type* operator->() const noexcept;
+
+    AvlIterator& operator++() noexcept;
+    AvlIterator operator++(int) noexcept;
+
+    bool operator==(const AvlIterator& other) const noexcept;
+    bool operator!=(const AvlIterator& other) const noexcept;
+
+    operator AvlConstIterator< Key, Value >() const noexcept;
+
+  private:
+    using Node = typename AvlTree< Key, Value, std::less< Key > >::Node;
+
+    Node* node_;
+    Node* fake_;
+
+    AvlIterator(Node* node, Node* fake) noexcept;
+
+    template< class K, class V, class C >
+    friend class AvlTree;
+  };
 }
 #endif
