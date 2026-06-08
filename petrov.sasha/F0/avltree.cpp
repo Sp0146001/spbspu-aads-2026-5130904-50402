@@ -541,4 +541,11 @@ petrov::AvlIterator< Key, Value >::operator petrov::AvlConstIterator< Key, Value
   return AvlConstIterator< Key, Value >(node_, fake_);
 }
 
+template class petrov::AvlConstIterator< std::string, petrov::Question >;
+template class petrov::AvlIterator< std::string, petrov::Question >;
+template class petrov::AvlTree< std::string, petrov::Question >;
+
+template class petrov::AvlConstIterator< std::string, petrov::Tag >;
+template class petrov::AvlIterator< std::string, petrov::Tag >;
+template class petrov::AvlTree< std::string, petrov::Tag >;
 
