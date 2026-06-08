@@ -348,4 +348,22 @@ Value petrov::AvlTree< Key, Value, Compare >::drop(const Key& key)
   return result;
 }
 
+template< class Key, class Value, class Compare >
+bool petrov::AvlTree< Key, Value, Compare >::has(const Key& key) const noexcept
+{
+  return findNode(key) != nullptr;
+}
+
+template< class Key, class Value, class Compare >
+bool petrov::AvlTree< Key, Value, Compare >::empty() const noexcept
+{
+  return root() == nullptr;
+}
+
+template< class Key, class Value, class Compare >
+std::size_t petrov::AvlTree< Key, Value, Compare >::size() const noexcept
+{
+  return size_;
+}
+
 
