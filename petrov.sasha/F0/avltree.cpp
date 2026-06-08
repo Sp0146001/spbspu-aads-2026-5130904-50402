@@ -175,4 +175,30 @@ petrov::AvlTree< Key, Value, Compare >::minimum(Node* node) const noexcept
   return node;
 }
 
+template< class Key, class Value, class Compare >
+int petrov::AvlTree< Key, Value, Compare >::nodeHeight(Node* node) const noexcept
+{
+  if (node == nullptr) {
+    return 0;
+  }
+  return node->height;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::AvlTree< Key, Value, Compare >::updateHeight(Node* node) noexcept
+{
+  const int leftHeight = nodeHeight(node->left);
+  const int rightHeight = nodeHeight(node->right);
+  node->height = std::max(leftHeight, rightHeight) + 1;
+}
+
+template< class Key, class Value, class Compare >
+int petrov::AvlTree< Key, Value, Compare >::balanceFactor(Node* node) const noexcept
+{
+  if (node == nullptr) {
+    return 0;
+  }
+  return nodeHeight(node->left) - nodeHeight(node->right);
+}
+
 
