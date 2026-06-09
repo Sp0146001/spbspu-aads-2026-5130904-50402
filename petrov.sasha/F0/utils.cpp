@@ -36,3 +36,38 @@ bool petrov::containsIgnoreCase(const std::string& haystack, const std::string& 
   return toLower(haystack).find(toLower(needle)) != std::string::npos;
 }
 
+std::vector< std::string > petrov::tokenize(const std::string& line)
+{
+  std::vector< std::string > tokens;
+  std::string current;
+  bool inQuotes = false;
+  bool hasToken = false;
+  for (std::size_t i = 0; i < line.size(); ++i) {
+    const char symbol = line[i];
+    if (inQuotes) {
+      if (symbol == '"') {
+        inQuotes = false;
+      } else {
+        current.push_back(symbol);
+      }
+    } else if (symbol == '"') {
+      inQuotes = true;
+      hasToken = true;
+    } else if (std::isspace(static_cast< unsigned char >(symbol))) {
+      if (hasToken) {
+        tokens.push_back(current);
+        current.clear();
+        hasToken = false;
+      }
+    } else {
+      current.push_back(symbol);
+      hasToken = true;
+    }
+  }
+  if (hasToken) {
+    tokens.push_back(current);
+  }
+  return tokens;
+}
+
+
