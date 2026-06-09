@@ -10,6 +10,7 @@ namespace petrov
   std::string toLower(const std::string& source);
   bool containsIgnoreCase(const std::string& haystack, const std::string& needle);
   std::vector< std::string > tokenize(const std::string& line);
+  std::vector< std::string > splitList(const std::string& source, char delimiter);
 }
 
 #endif

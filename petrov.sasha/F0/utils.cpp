@@ -70,4 +70,26 @@ std::vector< std::string > petrov::tokenize(const std::string& line)
   return tokens;
 }
 
+std::vector< std::string > petrov::splitList(const std::string& source, char delimiter)
+{
+  std::vector< std::string > result;
+  std::string current;
+  for (std::size_t i = 0; i < source.size(); ++i) {
+    if (source[i] == delimiter) {
+      const std::string trimmed = trim(current);
+      if (!trimmed.empty()) {
+        result.push_back(trimmed);
+      }
+      current.clear();
+    } else {
+      current.push_back(source[i]);
+    }
+  }
+  const std::string trimmed = trim(current);
+  if (!trimmed.empty()) {
+    result.push_back(trimmed);
+  }
+  return result;
+}
+
 
