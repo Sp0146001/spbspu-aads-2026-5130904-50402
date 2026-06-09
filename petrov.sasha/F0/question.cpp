@@ -1,4 +1,5 @@
 #include "question.hpp"
+#include "utils.hpp"
 
 #include <cctype>
 #include <ostream>
@@ -77,5 +78,19 @@ std::string petrov::answerString(const Question& question)
   return result.empty() ? std::string("?") : result;
 }
 
+bool petrov::matchesInBody(const Question& question, const std::string& needle)
+{
+  for (std::size_t i = 0; i < question.options.size(); ++i) {
+    if (containsIgnoreCase(question.options[i], needle)) {
+      return true;
+    }
+  }
+  for (std::size_t i = 0; i < question.rights.size(); ++i) {
+    if (containsIgnoreCase(question.rights[i], needle)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 
