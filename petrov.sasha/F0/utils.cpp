@@ -17,3 +17,13 @@ std::string petrov::trim(const std::string& source)
   return source.substr(begin, end - begin);
 }
 
+std::string petrov::toLower(const std::string& source)
+{
+  std::string result;
+  result.reserve(source.size());
+  for (std::size_t i = 0; i < source.size(); ++i) {
+    const char lowered = static_cast< char >(std::tolower(static_cast< unsigned char >(source[i])));
+    result.push_back(lowered);
+  }
+  return result;
+}
