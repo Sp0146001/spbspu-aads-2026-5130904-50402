@@ -27,6 +27,17 @@ namespace petrov
       deletedTags(0)
     {}
   };
+  void detachQuestionFromTags(Database& database, Question& question);
+}
+
+void petrov::detachQuestionFromTags(Database& database, Question& question)
+{
+  for (std::set< std::string >::const_iterator it = question.tags.begin(); it != question.tags.end(); ++it) {
+    if (database.tags.has(*it)) {
+      database.tags.get(*it).questionIds.erase(question.id);
+    }
+  }
+  question.tags.clear();
 }
 
 #endif
