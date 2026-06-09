@@ -27,3 +27,12 @@ std::string petrov::toLower(const std::string& source)
   }
   return result;
 }
+
+bool petrov::containsIgnoreCase(const std::string& haystack, const std::string& needle)
+{
+  if (needle.empty()) {
+    return true;
+  }
+  return toLower(haystack).find(toLower(needle)) != std::string::npos;
+}
+
