@@ -433,3 +433,13 @@ void petrov::questionTags(Database& database, const Tokens& tokens, std::istream
   out << '\n';
 }
 
+void petrov::printTemplate(Database&, const Tokens&, std::istream&, std::ostream& out)
+{
+  out << "# Шаблон входного файла\n";
+  out << "title=\n";
+  out << "variants=\n";
+  out << "questions_per_variant=\n";
+  out << "tags=\n";
+  out << "exclude_ids=\n";
+}
+
