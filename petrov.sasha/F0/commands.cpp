@@ -330,3 +330,31 @@ void petrov::delTag(Database& database, const Tokens& tokens, std::istream&, std
   out << "<Тег \"" << name << "\" удалён>\n";
 }
 
+void petrov::listTags(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "specify all or <tag>");
+    return;
+  }
+  if (tokens[1] == "all") {
+    out << "Список тегов:\n";
+    for (TagTree::const_iterator it = database.tags.begin(); it != database.tags.end(); ++it) {
+      out << "- " << it->first << " (" << it->second.questionIds.size() << " вопросов)\n";
+    }
+    return;
+  }
+  const std::string& name = tokens[1];
+  if (!database.tags.has(name)) {
+    reportInvalid(out, "tag \"" + name + "\" does not exist");
+    return;
+  }
+  const Tag& tag = database.tags.get(name);
+  out << "Тег \"" << name << "\":\n";
+  for (std::set< std::string >::const_iterator it = tag.questionIds.begin(); it != tag.questionIds.end(); ++it) {
+    if (database.questions.has(*it)) {
+      const Question& question = database.questions.get(*it);
+      out << question.id << " " << question.text << '\n';
+    }
+  }
+}
+
