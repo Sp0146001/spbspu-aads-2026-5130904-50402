@@ -144,5 +144,28 @@ void petrov::addQuestion(Database& database, const Tokens& tokens, std::istream&
     out << "<Добавлен вопрос id=" << id << ", тип multiple>\n";
     return;
   }
+  if (type == "matching") {
+    if (tokens.size() < 6) {
+      reportInvalid(out, "not enough arguments");
+      return;
+    }
+    const std::size_t count = tokens.size() - 4;
+    if (count % 2 != 0) {
+      reportInvalid(out, "odd number of pair elements");
+      return;
+    }
+    Question question;
+    question.id = id;
+    question.text = tokens[3];
+    question.type = QuestionType::matching;
+    for (std::size_t i = 4; i < tokens.size(); i += 2) {
+      question.options.push_back(tokens[i]);
+      question.rights.push_back(tokens[i + 1]);
+    }
+    database.questions.push(id, question);
+    out << "<Добавлен вопрос id=" << id << ", тип matching>\n";
+    return;
+  }
+  reportInvalid(out, "unknown type " + type);
 }
 
