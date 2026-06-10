@@ -443,3 +443,25 @@ void petrov::printTemplate(Database&, const Tokens&, std::istream&, std::ostream
   out << "exclude_ids=\n";
 }
 
+void petrov::statsQuestions(Database& database, const Tokens&, std::istream&, std::ostream& out)
+{
+  std::size_t single = 0;
+  std::size_t multiple = 0;
+  std::size_t matching = 0;
+  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+    if (it->second.type == QuestionType::single) {
+      single = single + 1;
+    } else if (it->second.type == QuestionType::multiple) {
+      multiple = multiple + 1;
+    } else {
+      matching = matching + 1;
+    }
+  }
+  out << "Статистика вопросов:\n";
+  out << "Всего вопросов: " << database.questions.size() << '\n';
+  out << "single: " << single << '\n';
+  out << "multiple: " << multiple << '\n';
+  out << "matching: " << matching << '\n';
+  out << "Удалённых вопросов: " << database.deletedQuestions << '\n';
+}
+
