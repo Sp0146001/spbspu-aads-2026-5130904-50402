@@ -106,4 +106,13 @@ void petrov::buildVariants(const GenParams& params, const std::vector< std::stri
   }
 }
 
+std::string petrov::makeAnswersPath(const std::string& outputPath)
+{
+  const std::size_t dot = outputPath.find_last_of('.');
+  if (dot == std::string::npos) {
+    return outputPath + "_answers.md";
+  }
+  return outputPath.substr(0, dot) + "_answers" + outputPath.substr(dot);
+}
+
 
