@@ -291,3 +291,42 @@ void petrov::findQuestions(Database& database, const Tokens& tokens, std::istrea
   }
 }
 
+void petrov::addTag(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& name = tokens[1];
+  if (database.tags.has(name)) {
+    reportInvalid(out, "tag \"" + name + "\" already exists");
+    return;
+  }
+  Tag tag;
+  tag.name = name;
+  database.tags.push(name, tag);
+  out << "<Тег \"" << name << "\" создан>\n";
+}
+
+void petrov::delTag(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& name = tokens[1];
+  if (!database.tags.has(name)) {
+    reportInvalid(out, "tag \"" + name + "\" does not exist");
+    return;
+  }
+  Tag& tag = database.tags.get(name);
+  for (std::set< std::string >::const_iterator it = tag.questionIds.begin(); it != tag.questionIds.end(); ++it) {
+    if (database.questions.has(*it)) {
+      database.questions.get(*it).tags.erase(name);
+    }
+  }
+  database.tags.drop(name);
+  database.deletedTags = database.deletedTags + 1;
+  out << "<Тег \"" << name << "\" удалён>\n";
+}
+
