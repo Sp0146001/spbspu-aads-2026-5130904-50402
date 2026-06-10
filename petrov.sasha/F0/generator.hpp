@@ -25,6 +25,12 @@ namespace petrov
       excludeIds()
     {}
   };
+
+  bool parseGenFile(const std::string& path, GenParams& params, std::string& error);
+  void selectCandidates(const Database& database, const GenParams& params, std::vector< std::string >& candidates);
+  void buildVariants(const GenParams& params, const std::vector< std::string >& candidates,
+    std::vector< std::vector< std::string > >& variants);
+  std::string makeAnswersPath(const std::string& outputPath);
 }
 
 #endif
