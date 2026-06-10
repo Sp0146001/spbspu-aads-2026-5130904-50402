@@ -414,3 +414,22 @@ void petrov::untagQuestion(Database& database, const Tokens& tokens, std::istrea
   out << "<У вопроса id=" << id << " удалено тегов: " << removed << ">\n";
 }
 
+void petrov::questionTags(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& id = tokens[1];
+  if (!database.questions.has(id)) {
+    reportInvalid(out, "Вопрос с id=" + id + " не найден");
+    return;
+  }
+  const Question& question = database.questions.get(id);
+  out << "Теги вопроса " << id << ":";
+  for (std::set< std::string >::const_iterator it = question.tags.begin(); it != question.tags.end(); ++it) {
+    out << " " << *it;
+  }
+  out << '\n';
+}
+
