@@ -465,3 +465,13 @@ void petrov::statsQuestions(Database& database, const Tokens&, std::istream&, st
   out << "Удалённых вопросов: " << database.deletedQuestions << '\n';
 }
 
+void petrov::statsTags(Database& database, const Tokens&, std::istream&, std::ostream& out)
+{
+  out << "Статистика тегов:\n";
+  out << "Всего тегов: " << database.tags.size() << '\n';
+  for (TagTree::const_iterator it = database.tags.begin(); it != database.tags.end(); ++it) {
+    out << "- " << it->first << ": " << it->second.questionIds.size() << '\n';
+  }
+  out << "Удалённых тегов: " << database.deletedTags << '\n';
+}
+
