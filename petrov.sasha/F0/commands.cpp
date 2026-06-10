@@ -358,3 +358,31 @@ void petrov::listTags(Database& database, const Tokens& tokens, std::istream&, s
   }
 }
 
+void petrov::tagQuestion(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() < 3) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& id = tokens[1];
+  if (!database.questions.has(id)) {
+    reportInvalid(out, "Вопрос с id=" + id + " не найден");
+    return;
+  }
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    if (!database.tags.has(tokens[i])) {
+      reportInvalid(out, "tag \"" + tokens[i] + "\" does not exist");
+      return;
+    }
+  }
+  Question& question = database.questions.get(id);
+  std::size_t added = 0;
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    if (question.tags.insert(tokens[i]).second) {
+      database.tags.get(tokens[i]).questionIds.insert(id);
+      added = added + 1;
+    }
+  }
+  out << "<Вопрос id=" << id << " обновлён. Добавлено тегов: " << added << ">\n";
+}
+
