@@ -201,3 +201,66 @@ void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream&
   out << "<Удалён вопрос id=" << id << ">\n";
 }
 
+void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() < 3) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& id = tokens[1];
+  if (!database.questions.has(id)) {
+    reportInvalid(out, "Вопрос с id=" + id + " не найден");
+    return;
+  }
+  Question& question = database.questions.get(id);
+  const std::size_t textPos = findMarker(tokens, "text", 2);
+  const std::size_t correctPos = findMarker(tokens, "correct", 2);
+  if (textPos == tokens.size() && correctPos == tokens.size()) {
+    reportInvalid(out, "no parameters to edit");
+    return;
+  }
+  if (textPos != tokens.size()) {
+    const std::size_t end = (correctPos != tokens.size() && correctPos > textPos) ? correctPos : tokens.size();
+    if (textPos + 1 >= end) {
+      reportInvalid(out, "empty text");
+      return;
+    }
+    std::string newText;
+    for (std::size_t i = textPos + 1; i < end; ++i) {
+      if (i > textPos + 1) {
+        newText += " ";
+      }
+      newText += tokens[i];
+    }
+    question.text = newText;
+  }
+  if (correctPos != tokens.size()) {
+    if (question.type == QuestionType::matching) {
+      reportInvalid(out, "matching answers are not editable");
+      return;
+    }
+    if (question.type == QuestionType::single && correctPos + 2 != tokens.size()) {
+      reportInvalid(out, "single requires exactly one correct answer");
+      return;
+    }
+    if (correctPos + 1 >= tokens.size()) {
+      reportInvalid(out, "no correct answers");
+      return;
+    }
+    std::set< std::size_t > unique;
+    for (std::size_t i = correctPos + 1; i < tokens.size(); ++i) {
+      std::size_t index = 0;
+      if (!letterToIndex(tokens[i], index) || index >= question.options.size()) {
+        reportInvalid(out, "invalid correct answer");
+        return;
+      }
+      unique.insert(index);
+    }
+    question.correct.clear();
+    for (std::set< std::size_t >::const_iterator it = unique.begin(); it != unique.end(); ++it) {
+      question.correct.push_back(*it);
+    }
+  }
+  out << "<Изменён вопрос id=" << id << ">\n";
+}
+
