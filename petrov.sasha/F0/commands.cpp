@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "generator.hpp"
 #include "markdown.hpp"
+#include "serializer.hpp"
 
 #include <cstddef>
 #include <istream>
@@ -50,7 +51,8 @@ static void reportInvalid(std::ostream& out, const std::string& reason)
   out << "<INVALID COMMAND> " << reason << '\n';
 }
 
-static std::size_t findMarker(const petrov::Tokens& tokens, const std::string& marker, std::size_t from)
+static std::size_t findMarker(const petrov::Tokens& tokens, const std::string& marker,
+  std::size_t from)
 {
   for (std::size_t i = from; i < tokens.size(); ++i) {
     if (tokens[i] == marker) {
@@ -141,7 +143,8 @@ void petrov::addQuestion(Database& database, const Tokens& tokens, std::istream&
       }
       unique.insert(index);
     }
-    for (std::set< std::size_t >::const_iterator it = unique.begin(); it != unique.end(); ++it) {
+    std::set< std::size_t >::const_iterator it = unique.begin();
+    for (; it != unique.end(); ++it) {
       question.correct.push_back(*it);
     }
     database.questions.push(id, question);
@@ -173,7 +176,8 @@ void petrov::addQuestion(Database& database, const Tokens& tokens, std::istream&
   reportInvalid(out, "unknown type " + type);
 }
 
-void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream& in, std::ostream& out)
+void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream& in,
+  std::ostream& out)
 {
   if (tokens.size() != 2) {
     reportInvalid(out, "not enough arguments");
@@ -186,7 +190,8 @@ void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream&
   }
   Question& question = database.questions.get(id);
   if (!question.tags.empty()) {
-    out << "<Вопрос id=" << id << " содержит теги. Подтвердить удаление? (Y/N)>\n";
+    out << "<Вопрос id=" << id << " содержит теги. ";
+    out << "Подтвердить удаление? (Y/N)>\n";
     std::string answer;
     if (!std::getline(in, answer)) {
       return;
@@ -203,7 +208,8 @@ void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream&
   out << "<Удалён вопрос id=" << id << ">\n";
 }
 
-void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream&,
+  std::ostream& out)
 {
   if (tokens.size() < 3) {
     reportInvalid(out, "not enough arguments");
@@ -222,7 +228,8 @@ void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream
     return;
   }
   if (textPos != tokens.size()) {
-    const std::size_t end = (correctPos != tokens.size() && correctPos > textPos) ? correctPos : tokens.size();
+    const bool hasCorrect = (correctPos != tokens.size() && correctPos > textPos);
+    const std::size_t end = hasCorrect ? correctPos : tokens.size();
     if (textPos + 1 >= end) {
       reportInvalid(out, "empty text");
       return;
@@ -259,7 +266,8 @@ void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream
       unique.insert(index);
     }
     question.correct.clear();
-    for (std::set< std::size_t >::const_iterator it = unique.begin(); it != unique.end(); ++it) {
+    std::set< std::size_t >::const_iterator it = unique.begin();
+    for (; it != unique.end(); ++it) {
       question.correct.push_back(*it);
     }
   }
@@ -268,13 +276,15 @@ void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream
 
 void petrov::listQuestions(Database& database, const Tokens&, std::istream&, std::ostream& out)
 {
-  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+  QuestionTree::const_iterator it = database.questions.begin();
+  for (; it != database.questions.end(); ++it) {
     const Question& question = it->second;
     out << question.id << " [" << typeName(question) << "] " << question.text << '\n';
   }
 }
 
-void petrov::findQuestions(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+void petrov::findQuestions(Database& database, const Tokens& tokens, std::istream&,
+  std::ostream& out)
 {
   if (tokens.size() < 2) {
     reportInvalid(out, "no substring");
@@ -285,7 +295,8 @@ void petrov::findQuestions(Database& database, const Tokens& tokens, std::istrea
     needle += " " + tokens[i];
   }
   out << "Результаты поиска \"" << needle << "\":\n";
-  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+  QuestionTree::const_iterator it = database.questions.begin();
+  for (; it != database.questions.end(); ++it) {
     const Question& question = it->second;
     if (containsIgnoreCase(question.text, needle) || matchesInBody(question, needle)) {
       out << question.id << " " << question.text << '\n';
@@ -322,7 +333,8 @@ void petrov::delTag(Database& database, const Tokens& tokens, std::istream&, std
     return;
   }
   Tag& tag = database.tags.get(name);
-  for (std::set< std::string >::const_iterator it = tag.questionIds.begin(); it != tag.questionIds.end(); ++it) {
+  std::set< std::string >::const_iterator it = tag.questionIds.begin();
+  for (; it != tag.questionIds.end(); ++it) {
     if (database.questions.has(*it)) {
       database.questions.get(*it).tags.erase(name);
     }
@@ -340,7 +352,8 @@ void petrov::listTags(Database& database, const Tokens& tokens, std::istream&, s
   }
   if (tokens[1] == "all") {
     out << "Список тегов:\n";
-    for (TagTree::const_iterator it = database.tags.begin(); it != database.tags.end(); ++it) {
+    TagTree::const_iterator it = database.tags.begin();
+    for (; it != database.tags.end(); ++it) {
       out << "- " << it->first << " (" << it->second.questionIds.size() << " вопросов)\n";
     }
     return;
@@ -352,7 +365,8 @@ void petrov::listTags(Database& database, const Tokens& tokens, std::istream&, s
   }
   const Tag& tag = database.tags.get(name);
   out << "Тег \"" << name << "\":\n";
-  for (std::set< std::string >::const_iterator it = tag.questionIds.begin(); it != tag.questionIds.end(); ++it) {
+  std::set< std::string >::const_iterator it = tag.questionIds.begin();
+  for (; it != tag.questionIds.end(); ++it) {
     if (database.questions.has(*it)) {
       const Question& question = database.questions.get(*it);
       out << question.id << " " << question.text << '\n';
@@ -385,10 +399,12 @@ void petrov::tagQuestion(Database& database, const Tokens& tokens, std::istream&
       added = added + 1;
     }
   }
-  out << "<Вопрос id=" << id << " обновлён. Добавлено тегов: " << added << ">\n";
+  out << "<Вопрос id=" << id << " обновлён. ";
+  out << "Добавлено тегов: " << added << ">\n";
 }
 
-void petrov::untagQuestion(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+void petrov::untagQuestion(Database& database, const Tokens& tokens, std::istream&,
+  std::ostream& out)
 {
   if (tokens.size() < 3) {
     reportInvalid(out, "not enough arguments");
@@ -416,7 +432,8 @@ void petrov::untagQuestion(Database& database, const Tokens& tokens, std::istrea
   out << "<У вопроса id=" << id << " удалено тегов: " << removed << ">\n";
 }
 
-void petrov::questionTags(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+void petrov::questionTags(Database& database, const Tokens& tokens, std::istream&,
+  std::ostream& out)
 {
   if (tokens.size() != 2) {
     reportInvalid(out, "not enough arguments");
@@ -429,7 +446,8 @@ void petrov::questionTags(Database& database, const Tokens& tokens, std::istream
   }
   const Question& question = database.questions.get(id);
   out << "Теги вопроса " << id << ":";
-  for (std::set< std::string >::const_iterator it = question.tags.begin(); it != question.tags.end(); ++it) {
+  std::set< std::string >::const_iterator it = question.tags.begin();
+  for (; it != question.tags.end(); ++it) {
     out << " " << *it;
   }
   out << '\n';
@@ -445,12 +463,40 @@ void petrov::printTemplate(Database&, const Tokens&, std::istream&, std::ostream
   out << "exclude_ids=\n";
 }
 
+void petrov::exportDb(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "specify file name");
+    return;
+  }
+  if (!exportDatabase(tokens[1], database)) {
+    reportInvalid(out, "cannot write file " + tokens[1]);
+    return;
+  }
+  out << "<База экспортирована в " << tokens[1] << ">\n";
+}
+
+void petrov::importDb(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "specify file name");
+    return;
+  }
+  std::string error;
+  if (!importDatabase(tokens[1], database, error)) {
+    reportInvalid(out, error);
+    return;
+  }
+  out << "<База импортирована из " << tokens[1] << ">\n";
+}
+
 void petrov::statsQuestions(Database& database, const Tokens&, std::istream&, std::ostream& out)
 {
   std::size_t single = 0;
   std::size_t multiple = 0;
   std::size_t matching = 0;
-  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+  QuestionTree::const_iterator it = database.questions.begin();
+  for (; it != database.questions.end(); ++it) {
     if (it->second.type == QuestionType::single) {
       single = single + 1;
     } else if (it->second.type == QuestionType::multiple) {
@@ -471,7 +517,8 @@ void petrov::statsTags(Database& database, const Tokens&, std::istream&, std::os
 {
   out << "Статистика тегов:\n";
   out << "Всего тегов: " << database.tags.size() << '\n';
-  for (TagTree::const_iterator it = database.tags.begin(); it != database.tags.end(); ++it) {
+  TagTree::const_iterator it = database.tags.begin();
+  for (; it != database.tags.end(); ++it) {
     out << "- " << it->first << ": " << it->second.questionIds.size() << '\n';
   }
   out << "Удалённых тегов: " << database.deletedTags << '\n';
@@ -511,7 +558,8 @@ void petrov::generate(Database& database, const Tokens& tokens, std::istream&, s
       return;
     }
   }
-  out << "<Сгенерировано " << params.variants << " варианта по " << params.questionsPerVariant << " вопросов>\n";
+  out << "<Сгенерировано " << params.variants << " варианта по ";
+  out << params.questionsPerVariant << " вопросов>\n";
 }
 
 
