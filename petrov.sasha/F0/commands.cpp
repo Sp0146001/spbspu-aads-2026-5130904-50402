@@ -264,3 +264,30 @@ void petrov::editQuestion(Database& database, const Tokens& tokens, std::istream
   out << "<Изменён вопрос id=" << id << ">\n";
 }
 
+void petrov::listQuestions(Database& database, const Tokens&, std::istream&, std::ostream& out)
+{
+  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+    const Question& question = it->second;
+    out << question.id << " [" << typeName(question) << "] " << question.text << '\n';
+  }
+}
+
+void petrov::findQuestions(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() < 2) {
+    reportInvalid(out, "no substring");
+    return;
+  }
+  std::string needle = tokens[1];
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    needle += " " + tokens[i];
+  }
+  out << "Результаты поиска \"" << needle << "\":\n";
+  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+    const Question& question = it->second;
+    if (containsIgnoreCase(question.text, needle) || matchesInBody(question, needle)) {
+      out << question.id << " " << question.text << '\n';
+    }
+  }
+}
+
