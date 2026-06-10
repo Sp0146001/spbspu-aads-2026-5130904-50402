@@ -1,6 +1,8 @@
 #include "commands.hpp"
 
 #include "utils.hpp"
+#include "generator.hpp"
+#include "markdown.hpp"
 
 #include <cstddef>
 #include <istream>
@@ -474,4 +476,42 @@ void petrov::statsTags(Database& database, const Tokens&, std::istream&, std::os
   }
   out << "Удалённых тегов: " << database.deletedTags << '\n';
 }
+
+void petrov::generate(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() < 3) {
+    reportInvalid(out, "specify input and output files");
+    return;
+  }
+  const std::string& inPath = tokens[1];
+  const std::string& outPath = tokens[2];
+  const bool withAnswers = (tokens.size() >= 4 && tokens[3] == "answers");
+  GenParams params;
+  std::string error;
+  if (!parseGenFile(inPath, params, error)) {
+    reportInvalid(out, error);
+    return;
+  }
+  std::vector< std::string > candidates;
+  selectCandidates(database, params, candidates);
+  if (candidates.size() < static_cast< std::size_t >(params.questionsPerVariant)) {
+    reportInvalid(out, "not enough available questions");
+    return;
+  }
+  std::vector< std::vector< std::string > > variants;
+  buildVariants(params, candidates, variants);
+  if (!writeVariants(outPath, params.title, variants, database)) {
+    reportInvalid(out, "cannot write file " + outPath);
+    return;
+  }
+  if (withAnswers) {
+    const std::string answersPath = makeAnswersPath(outPath);
+    if (!writeAnswers(answersPath, params.title, variants, database)) {
+      reportInvalid(out, "cannot write answers file");
+      return;
+    }
+  }
+  out << "<Сгенерировано " << params.variants << " варианта по " << params.questionsPerVariant << " вопросов>\n";
+}
+
 
