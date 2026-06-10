@@ -41,3 +41,18 @@ const petrov::Command* petrov::findCommand(const std::string& name)
   return nullptr;
 }
 
+static void reportInvalid(std::ostream& out, const std::string& reason)
+{
+  out << "<INVALID COMMAND> " << reason << '\n';
+}
+
+static std::size_t findMarker(const petrov::Tokens& tokens, const std::string& marker, std::size_t from)
+{
+  for (std::size_t i = from; i < tokens.size(); ++i) {
+    if (tokens[i] == marker) {
+      return i;
+    }
+  }
+  return tokens.size();
+}
+
