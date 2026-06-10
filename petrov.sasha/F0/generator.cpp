@@ -83,4 +83,27 @@ void petrov::selectCandidates(const Database& database, const GenParams& params,
   }
 }
 
+void petrov::buildVariants(const GenParams& params, const std::vector< std::string >& candidates,
+  std::vector< std::vector< std::string > >& variants)
+{
+  const unsigned int seed = 12345u;
+  std::mt19937 generator(seed);
+  const std::size_t needed = static_cast< std::size_t >(params.questionsPerVariant);
+  for (int v = 0; v < params.variants; ++v) {
+    std::vector< std::string > pool(candidates);
+    for (std::size_t i = pool.size(); i > 1; --i) {
+      std::uniform_int_distribution< std::size_t > distribution(0, i - 1);
+      const std::size_t j = distribution(generator);
+      const std::string temp = pool[i - 1];
+      pool[i - 1] = pool[j];
+      pool[j] = temp;
+    }
+    std::vector< std::string > variant;
+    for (std::size_t i = 0; i < needed; ++i) {
+      variant.push_back(pool[i]);
+    }
+    variants.push_back(variant);
+  }
+}
+
 
