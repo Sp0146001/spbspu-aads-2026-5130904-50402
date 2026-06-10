@@ -386,3 +386,31 @@ void petrov::tagQuestion(Database& database, const Tokens& tokens, std::istream&
   out << "<Вопрос id=" << id << " обновлён. Добавлено тегов: " << added << ">\n";
 }
 
+void petrov::untagQuestion(Database& database, const Tokens& tokens, std::istream&, std::ostream& out)
+{
+  if (tokens.size() < 3) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& id = tokens[1];
+  if (!database.questions.has(id)) {
+    reportInvalid(out, "Вопрос с id=" + id + " не найден");
+    return;
+  }
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    if (!database.tags.has(tokens[i])) {
+      reportInvalid(out, "tag \"" + tokens[i] + "\" does not exist");
+      return;
+    }
+  }
+  Question& question = database.questions.get(id);
+  std::size_t removed = 0;
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    if (question.tags.erase(tokens[i]) > 0) {
+      database.tags.get(tokens[i]).questionIds.erase(id);
+      removed = removed + 1;
+    }
+  }
+  out << "<У вопроса id=" << id << " удалено тегов: " << removed << ">\n";
+}
+
