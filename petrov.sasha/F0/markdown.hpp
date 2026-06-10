@@ -23,9 +23,9 @@ namespace petrov
       file << "## Вариант " << (v + 1) << "\n\n";
       for (std::size_t i = 0; i < variants[v].size(); ++i) {
         const Question& question = database.questions.get(variants[v][i]);
-      file << (i + 1) << ". " << question.text << "\n";
+        file << (i + 1) << ". " << question.text << '\n';
         renderBody(file, question);
-        file << "\n";
+        file << '\n';
       }
     }
     return static_cast< bool >(file);
@@ -43,9 +43,9 @@ namespace petrov
       file << "## Вариант " << (v + 1) << "\n\n";
       for (std::size_t i = 0; i < variants[v].size(); ++i) {
         const Question& question = database.questions.get(variants[v][i]);
-        file << (i + 1) << ". " << answerString(question) << "\n";
+        file << (i + 1) << ". " << answerString(question) << '\n';
       }
-      file << "\n";
+      file << '\n';
     }
     return static_cast< bool >(file);
   }
