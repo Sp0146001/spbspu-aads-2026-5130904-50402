@@ -63,3 +63,24 @@ bool petrov::parseGenFile(const std::string& path, GenParams& params, std::strin
   return true;
 }
 
+void petrov::selectCandidates(const Database& database, const GenParams& params,
+  std::vector< std::string >& candidates)
+{
+  for (QuestionTree::const_iterator it = database.questions.begin(); it != database.questions.end(); ++it) {
+    const Question& question = it->second;
+    if (params.excludeIds.count(question.id) != 0) {
+      continue;
+    }
+    bool matched = params.tags.empty();
+    for (std::size_t i = 0; i < params.tags.size() && !matched; ++i) {
+      if (question.tags.count(params.tags[i]) != 0) {
+        matched = true;
+      }
+    }
+    if (matched) {
+      candidates.push_back(question.id);
+    }
+  }
+}
+
+
