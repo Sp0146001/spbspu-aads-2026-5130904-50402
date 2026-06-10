@@ -1,5 +1,7 @@
 #include "commands.hpp"
 
+#include "utils.hpp"
+
 #include <cstddef>
 #include <istream>
 #include <ostream>
@@ -167,5 +169,35 @@ void petrov::addQuestion(Database& database, const Tokens& tokens, std::istream&
     return;
   }
   reportInvalid(out, "unknown type " + type);
+}
+
+void petrov::delQuestion(Database& database, const Tokens& tokens, std::istream& in, std::ostream& out)
+{
+  if (tokens.size() != 2) {
+    reportInvalid(out, "not enough arguments");
+    return;
+  }
+  const std::string& id = tokens[1];
+  if (!database.questions.has(id)) {
+    reportInvalid(out, "Вопрос с id=" + id + " не найден");
+    return;
+  }
+  Question& question = database.questions.get(id);
+  if (!question.tags.empty()) {
+    out << "<Вопрос id=" << id << " содержит теги. Подтвердить удаление? (Y/N)>\n";
+    std::string answer;
+    if (!std::getline(in, answer)) {
+      return;
+    }
+    answer = trim(answer);
+    if (answer != "Y" && answer != "y") {
+      out << "<Удаление отменено>\n";
+      return;
+    }
+  }
+  detachQuestionFromTags(database, question);
+  database.questions.drop(id);
+  database.deletedQuestions = database.deletedQuestions + 1;
+  out << "<Удалён вопрос id=" << id << ">\n";
 }
 
