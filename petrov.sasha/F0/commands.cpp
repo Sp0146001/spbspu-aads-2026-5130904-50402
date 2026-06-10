@@ -103,5 +103,46 @@ void petrov::addQuestion(Database& database, const Tokens& tokens, std::istream&
     out << "<Добавлен вопрос id=" << id << ", тип single>\n";
     return;
   }
+  if (type == "multiple") {
+    if (tokens.size() < 4) {
+      reportInvalid(out, "not enough arguments");
+      return;
+    }
+    const std::size_t correctPos = findMarker(tokens, "correct", 4);
+    if (correctPos == tokens.size()) {
+      reportInvalid(out, "missing correct marker");
+      return;
+    }
+    if (correctPos == 4) {
+      reportInvalid(out, "no answer options");
+      return;
+    }
+    if (correctPos + 1 >= tokens.size()) {
+      reportInvalid(out, "no correct answers");
+      return;
+    }
+    Question question;
+    question.id = id;
+    question.text = tokens[3];
+    question.type = QuestionType::multiple;
+    for (std::size_t i = 4; i < correctPos; ++i) {
+      question.options.push_back(tokens[i]);
+    }
+    std::set< std::size_t > unique;
+    for (std::size_t i = correctPos + 1; i < tokens.size(); ++i) {
+      std::size_t index = 0;
+      if (!letterToIndex(tokens[i], index) || index >= question.options.size()) {
+        reportInvalid(out, "invalid correct answer");
+        return;
+      }
+      unique.insert(index);
+    }
+    for (std::set< std::size_t >::const_iterator it = unique.begin(); it != unique.end(); ++it) {
+      question.correct.push_back(*it);
+    }
+    database.questions.push(id, question);
+    out << "<Добавлен вопрос id=" << id << ", тип multiple>\n";
+    return;
+  }
 }
 
