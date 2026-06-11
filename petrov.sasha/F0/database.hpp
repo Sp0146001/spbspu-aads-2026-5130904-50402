@@ -20,24 +20,9 @@ namespace petrov
     std::size_t deletedQuestions;
     std::size_t deletedTags;
 
-    Database():
-      questions(),
-      tags(),
-      deletedQuestions(0),
-      deletedTags(0)
-    {}
+    Database();
   };
   void detachQuestionFromTags(Database& database, Question& question);
-}
-
-void petrov::detachQuestionFromTags(Database& database, Question& question)
-{
-  for (std::set< std::string >::const_iterator it = question.tags.begin(); it != question.tags.end(); ++it) {
-    if (database.tags.has(*it)) {
-      database.tags.get(*it).questionIds.erase(question.id);
-    }
-  }
-  question.tags.clear();
 }
 
 #endif
