@@ -11,10 +11,7 @@ namespace petrov
     std::string name;
     std::set< std::string > questionIds;
 
-    Tag():
-      name(),
-      questionIds()
-    {}
+    Tag();
   };
 }
 
