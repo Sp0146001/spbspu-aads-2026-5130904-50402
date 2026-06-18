@@ -348,6 +348,16 @@ namespace petrov {
       std::swap(tail_, other.tail_);
       std::swap(size_, other.size_);
     }
+    void splice(iterator position, List< T >& other) noexcept;
+    void splice(iterator position, List< T >& other, iterator i) noexcept;
+    void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept;
+
+    void sort() noexcept;
+
+    void merge(List< T >& other) noexcept;
+
+    template< class Predicate >
+    iterator partition(Predicate pred);
 
   private:
     Node< T >* head_;
