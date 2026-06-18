@@ -554,7 +554,25 @@ namespace petrov {
     }
 
     template< class Predicate >
-    iterator partition(Predicate pred);
+    iterator partition(Predicate pred)
+    {
+      List< T > falseList;
+      iterator it = begin();
+      while (it != end()) {
+        iterator next = it;
+        ++next;
+        if (!pred(*it)) {
+          falseList.splice(falseList.end(), *this, it);
+        }
+        it = next;
+      }
+      if (falseList.empty()) {
+        return end();
+      }
+      iterator split = falseList.begin();
+      splice(end(), falseList);
+      return split;
+    }
 
   private:
     Node< T >* head_;
