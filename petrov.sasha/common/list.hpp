@@ -385,6 +385,11 @@ namespace petrov {
       other.size_ = 0;
     }
 
+    void splice(iterator position, List< T >&& other) noexcept
+    {
+      splice(position, other);
+    }
+
     void splice(iterator position, List< T >& other, iterator i) noexcept
     {
       if (i == other.end()) {
@@ -426,6 +431,11 @@ namespace petrov {
         posNode->prev_ = node;
       }
       ++size_;
+    }
+
+    void splice(iterator position, List< T >&& other, iterator i) noexcept
+    {
+      splice(position, other, i);
     }
 
     void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept
@@ -476,6 +486,11 @@ namespace petrov {
         posNode->prev_ = rangeLast;
       }
       size_ += count;
+    }
+
+    void splice(iterator position, List< T >&& other, iterator first, iterator last) noexcept
+    {
+      splice(position, other, first, last);
     }
 
     void sort() noexcept
@@ -551,6 +566,11 @@ namespace petrov {
       head_ = resultHead;
       tail_ = resultTail;
       size_ += otherCount;
+    }
+
+    void merge(List< T >&& other) noexcept
+    {
+      merge(other);
     }
 
     template< class Predicate >
