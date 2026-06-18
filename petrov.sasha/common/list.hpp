@@ -494,7 +494,64 @@ namespace petrov {
       merge(left);
     }
 
-    void merge(List< T >& other) noexcept;
+    void merge(List< T >& other) noexcept
+    {
+      assert(this != std::addressof(other));
+      if (other.empty()) {
+        return;
+      }
+      Node< T >* otherFirst = other.head_;
+      std::size_t otherCount = other.size_;
+      other.head_ = nullptr;
+      other.tail_ = nullptr;
+      other.size_ = 0;
+
+      Node< T >* resultHead = nullptr;
+      Node< T >* resultTail = nullptr;
+      Node< T >* p1 = head_;
+      Node< T >* p2 = otherFirst;
+      while (p1 != nullptr && p2 != nullptr) {
+        Node< T >* next;
+        Node< T >* chosen;
+        if (p2->value_ < p1->value_) {
+          chosen = p2;
+          next = p2->next_;
+        } else {
+          chosen = p1;
+          next = p1->next_;
+        }
+        chosen->prev_ = resultTail;
+        chosen->next_ = nullptr;
+        if (resultTail != nullptr) {
+          resultTail->next_ = chosen;
+        } else {
+          resultHead = chosen;
+        }
+        resultTail = chosen;
+        if (chosen == p2) {
+          p2 = next;
+        } else {
+          p1 = next;
+        }
+      }
+      Node< T >* rest = (p1 != nullptr) ? p1 : p2;
+      while (rest != nullptr) {
+        Node< T >* next = rest->next_;
+        rest->prev_ = resultTail;
+        rest->next_ = nullptr;
+        if (resultTail != nullptr) {
+          resultTail->next_ = rest;
+        } else {
+          resultHead = rest;
+        }
+        resultTail = rest;
+        rest = next;
+      }
+
+      head_ = resultHead;
+      tail_ = resultTail;
+      size_ += otherCount;
+    }
 
     template< class Predicate >
     iterator partition(Predicate pred);
