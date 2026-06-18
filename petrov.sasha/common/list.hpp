@@ -348,7 +348,43 @@ namespace petrov {
       std::swap(tail_, other.tail_);
       std::swap(size_, other.size_);
     }
-    void splice(iterator position, List< T >& other) noexcept;
+
+    void splice(iterator position, List< T >& other) noexcept
+    {
+      if (other.empty()) {
+        return;
+      }
+      Node< T >* posNode = position.ptr_;
+      Node< T >* otherFirst = other.head_;
+      Node< T >* otherLast = other.tail_;
+
+      if (posNode == nullptr) {
+        otherFirst->prev_ = tail_;
+        otherLast->next_ = nullptr;
+        if (tail_ != nullptr) {
+          tail_->next_ = otherFirst;
+        } else {
+          head_ = otherFirst;
+        }
+        tail_ = otherLast;
+      } else if (posNode == head_) {
+        otherFirst->prev_ = nullptr;
+        otherLast->next_ = head_;
+        head_->prev_ = otherLast;
+        head_ = otherFirst;
+      } else {
+        otherFirst->prev_ = posNode->prev_;
+        posNode->prev_->next_ = otherFirst;
+        otherLast->next_ = posNode;
+        posNode->prev_ = otherLast;
+      }
+
+      size_ += other.size_;
+      other.head_ = nullptr;
+      other.tail_ = nullptr;
+      other.size_ = 0;
+    }
+
     void splice(iterator position, List< T >& other, iterator i) noexcept;
     void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept;
 
