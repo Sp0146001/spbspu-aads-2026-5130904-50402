@@ -478,7 +478,21 @@ namespace petrov {
       size_ += count;
     }
 
-    void sort() noexcept;
+    void sort() noexcept
+    {
+      if (size_ < 2) {
+        return;
+      }
+      iterator mid = begin();
+      for (std::size_t i = 0; i < size_ / 2; ++i) {
+        ++mid;
+      }
+      List< T > left;
+      left.splice(left.end(), *this, begin(), mid);
+      left.sort();
+      sort();
+      merge(left);
+    }
 
     void merge(List< T >& other) noexcept;
 
