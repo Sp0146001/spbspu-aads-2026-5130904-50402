@@ -162,7 +162,7 @@ namespace petrov {
     {
       try {
         for (const_iterator it = other.cbegin(); it != other.cend(); ++it) {
-          pushBack(*it);
+          push_back(*it);
         }
       } catch (...) {
         clear();
@@ -258,7 +258,7 @@ namespace petrov {
       return tail_->value_;
     }
 
-    void pushFront(const T& value)
+    void push_front(const T& value)
     {
       Node< T >* new_node = new Node< T >(value);
       new_node->next_ = head_;
@@ -271,7 +271,7 @@ namespace petrov {
       ++size_;
     }
 
-    void pushBack(const T& value)
+    void push_back(const T& value)
     {
       Node< T >* new_node = new Node< T >(value);
       new_node->prev_ = tail_;
