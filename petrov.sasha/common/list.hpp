@@ -4,6 +4,7 @@
 #include <utility>
 #include <cstddef>
 #include <memory>
+#include <utility>
 
 namespace petrov {
 
@@ -11,7 +12,8 @@ namespace petrov {
   class List;
 
   template< class T >
-  struct Node {
+  struct Node
+  {
     T value_;
     Node< T >* next_;
     Node< T >* prev_;
@@ -24,7 +26,8 @@ namespace petrov {
   };
 
   template< class T >
-  class LIter {
+  class LIter
+  {
     friend class List< T >;
   public:
     LIter(Node< T >* ptr = nullptr):
@@ -82,7 +85,8 @@ namespace petrov {
   };
 
   template< class T >
-  class LCIter {
+  class LCIter
+  {
     friend class List< T >;
   public:
     LCIter(const Node< T >* ptr = nullptr):
@@ -144,7 +148,8 @@ namespace petrov {
   };
 
   template< class T >
-  class List {
+  class List
+  {
   public:
     using iterator = LIter< T >;
     using const_iterator = LCIter< T >;
