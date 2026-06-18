@@ -385,7 +385,49 @@ namespace petrov {
       other.size_ = 0;
     }
 
-    void splice(iterator position, List< T >& other, iterator i) noexcept;
+    void splice(iterator position, List< T >& other, iterator i) noexcept
+    {
+      if (i == other.end()) {
+        return;
+      }
+      Node< T >* posNode = position.ptr_;
+      Node< T >* node = i.ptr_;
+
+      if (node == other.head_) {
+        other.head_ = node->next_;
+      } else {
+        node->prev_->next_ = node->next_;
+      }
+      if (node == other.tail_) {
+        other.tail_ = node->prev_;
+      } else {
+        node->next_->prev_ = node->prev_;
+      }
+      --other.size_;
+
+      if (posNode == nullptr) {
+        node->prev_ = tail_;
+        node->next_ = nullptr;
+        if (tail_ != nullptr) {
+          tail_->next_ = node;
+        } else {
+          head_ = node;
+        }
+        tail_ = node;
+      } else if (posNode == head_) {
+        node->prev_ = nullptr;
+        node->next_ = head_;
+        head_->prev_ = node;
+        head_ = node;
+      } else {
+        node->prev_ = posNode->prev_;
+        posNode->prev_->next_ = node;
+        node->next_ = posNode;
+        posNode->prev_ = node;
+      }
+      ++size_;
+    }
+
     void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept;
 
     void sort() noexcept;
@@ -404,3 +446,4 @@ namespace petrov {
 }
 
 #endif
+
