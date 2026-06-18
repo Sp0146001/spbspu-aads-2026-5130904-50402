@@ -428,7 +428,55 @@ namespace petrov {
       ++size_;
     }
 
-    void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept;
+    void splice(iterator position, List< T >& other, iterator first, iterator last) noexcept
+    {
+      if (first == last) {
+        return;
+      }
+      std::size_t count = 0;
+      for (iterator it = first; it != last; ++it) {
+        ++count;
+      }
+
+      Node< T >* fNode = first.ptr_;
+      Node< T >* lNode = last.ptr_;
+      Node< T >* rangeLast = lNode ? lNode->prev_ : other.tail_;
+
+      if (fNode == other.head_) {
+        other.head_ = lNode;
+      } else {
+        fNode->prev_->next_ = lNode;
+      }
+      if (lNode == nullptr) {
+        other.tail_ = fNode->prev_;
+      } else {
+        lNode->prev_ = fNode->prev_;
+      }
+      other.size_ -= count;
+
+      Node< T >* posNode = position.ptr_;
+      if (posNode == nullptr) {
+        fNode->prev_ = tail_;
+        rangeLast->next_ = nullptr;
+        if (tail_ != nullptr) {
+          tail_->next_ = fNode;
+        } else {
+          head_ = fNode;
+        }
+        tail_ = rangeLast;
+      } else if (posNode == head_) {
+        fNode->prev_ = nullptr;
+        rangeLast->next_ = head_;
+        head_->prev_ = rangeLast;
+        head_ = fNode;
+      } else {
+        fNode->prev_ = posNode->prev_;
+        posNode->prev_->next_ = fNode;
+        rangeLast->next_ = posNode;
+        posNode->prev_ = rangeLast;
+      }
+      size_ += count;
+    }
 
     void sort() noexcept;
 
