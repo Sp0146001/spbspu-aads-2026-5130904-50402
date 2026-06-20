@@ -23,6 +23,12 @@ namespace petrov {
       next_(nullptr),
       prev_(nullptr)
     {}
+
+    Node(T&& value):
+      value_(std::move(value)),
+      next_(nullptr),
+      prev_(nullptr)
+    {}
   };
 
   template< class T >
