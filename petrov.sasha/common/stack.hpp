@@ -9,7 +9,7 @@ namespace petrov {
   class Stack {
     public:
       void push(const T& rhs) {
-        list_.pushBack(rhs);
+        list_.push_back(rhs);
       }
 
       void pop() {
