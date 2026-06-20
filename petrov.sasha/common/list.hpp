@@ -29,6 +29,13 @@ namespace petrov {
       next_(nullptr),
       prev_(nullptr)
     {}
+
+    template< class First, class... Rest >
+    Node(Node< T >* next, Node< T >* prev, First&& first, Rest&&... rest):
+      value_(std::forward< First >(first), std::forward< Rest >(rest)...),
+      next_(next),
+      prev_(prev)
+    {}
   };
 
   template< class T >
