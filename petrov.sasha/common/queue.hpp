@@ -12,6 +12,10 @@ namespace petrov {
         list_.push_back(rhs);
       }
 
+      void push(T&& rhs) {
+        list_.push_back(std::move(rhs));
+      }
+
       void pop() {
         if (list_.empty()) {
           throw std::logic_error("Queue empty");
