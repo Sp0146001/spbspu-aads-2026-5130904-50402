@@ -289,9 +289,35 @@ namespace petrov {
       ++size_;
     }
 
+    void push_front(T&& value)
+    {
+      Node< T >* new_node = new Node< T >(std::move(value));
+      new_node->next_ = head_;
+      if (head_ != nullptr) {
+        head_->prev_ = new_node;
+      } else {
+        tail_ = new_node;
+      }
+      head_ = new_node;
+      ++size_;
+    }
+
     void push_back(const T& value)
     {
       Node< T >* new_node = new Node< T >(value);
+      new_node->prev_ = tail_;
+      if (tail_ != nullptr) {
+        tail_->next_ = new_node;
+      } else {
+        head_ = new_node;
+      }
+      tail_ = new_node;
+      ++size_;
+    }
+
+    void push_back(T&& value)
+    {
+      Node< T >* new_node = new Node< T >(std::move(value));
       new_node->prev_ = tail_;
       if (tail_ != nullptr) {
         tail_->next_ = new_node;
