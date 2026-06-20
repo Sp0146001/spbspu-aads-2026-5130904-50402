@@ -328,6 +328,32 @@ namespace petrov {
       ++size_;
     }
 
+    template< class... Args >
+    void emplace_front(Args&&... args)
+    {
+      Node< T >* new_node = new Node< T >(head_, nullptr, std::forward< Args >(args)...);
+      if (head_ != nullptr) {
+        head_->prev_ = new_node;
+      } else {
+        tail_ = new_node;
+      }
+      head_ = new_node;
+      ++size_;
+    }
+
+    template< class... Args >
+    void emplace_back(Args&&... args)
+    {
+      Node< T >* new_node = new Node< T >(nullptr, tail_, std::forward< Args >(args)...);
+      if (tail_ != nullptr) {
+        tail_->next_ = new_node;
+      } else {
+        head_ = new_node;
+      }
+      tail_ = new_node;
+      ++size_;
+    }
+
     void popFront()
     {
       if (head_ == nullptr) {
