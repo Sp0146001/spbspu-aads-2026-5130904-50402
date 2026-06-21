@@ -89,16 +89,18 @@ namespace petrov {
 
   void checkAdditionOverflow(long long left, long long right)
 	{
-    if ((right > 0 && left > LLONG_MAX - right) ||
-        (right < 0 && left < LLONG_MIN - right)) {
+    bool check = (right > 0 && left > LLONG_MAX - right);
+    check = check || (right < 0 && left < LLONG_MIN - right);
+    if (check) {
       throw std::overflow_error("Overflow");
     }
   }
 
   void checkSubtractionOverflow(long long left, long long right)
 	{
-    if ((right < 0 && left > LLONG_MAX + right) ||
-        (right > 0 && left < LLONG_MIN + right)) {
+    bool check = (right < 0 && left > LLONG_MAX + right);
+    check = check || (right > 0 && left < LLONG_MIN + right);
+    if (check) {
       throw std::overflow_error("Overflow");
     }
   }
