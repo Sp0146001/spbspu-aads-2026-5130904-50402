@@ -9,12 +9,12 @@
 namespace petrov {
 
   bool isOperator(const std::string& token)
-	{
+  {
     return token == "+" || token == "-" || token == "|" || token == "%" || token == "/" || token == "*";
   }
 
   int getPrecedence(const std::string& op)
-	{
+  {
     if (op == "|") {
       return 1;
     }
@@ -88,7 +88,7 @@ namespace petrov {
   }
 
   void checkAdditionOverflow(long long left, long long right)
-	{
+  {
     bool check = (right > 0 && left > LLONG_MAX - right);
     check = check || (right < 0 && left < LLONG_MIN - right);
     if (check) {
@@ -97,7 +97,7 @@ namespace petrov {
   }
 
   void checkSubtractionOverflow(long long left, long long right)
-	{
+  {
     bool check = (right < 0 && left > LLONG_MAX + right);
     check = check || (right > 0 && left < LLONG_MIN + right);
     if (check) {
@@ -106,7 +106,7 @@ namespace petrov {
   }
 
   void checkMultiplicationOverflow(long long left, long long right)
-	{
+  {
     if (left == 0 || right == 0) {
       return;
     }
@@ -125,7 +125,7 @@ namespace petrov {
   }
 
   long long positiveModulo(long long left, long long right)
-	{
+  {
     long long result = left % right;
     if (result < 0) {
       result += llabs(right);
