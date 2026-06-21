@@ -3,6 +3,7 @@
 
 #include "list.hpp"
 #include <stdexcept>
+#include <utility>
 
 namespace petrov {
   template< class T >
@@ -36,6 +37,11 @@ namespace petrov {
 
       std::size_t size() const {
         return list_.size();
+      }
+
+      template< class... Args >
+      void emplace(Args&&... args) {
+        list_.emplace_back(std::forward< Args >(args)...);
       }
     private:
       List< T > list_;
