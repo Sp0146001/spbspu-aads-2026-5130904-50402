@@ -587,7 +587,7 @@ namespace petrov {
     }
 
     template< class Comparator >
-    void List< T >::merge(List< T > &&other, Comparator cmp) noexcept
+    void merge(List< T > &&other, Comparator cmp) noexcept
     {
       merge(other, cmp);
     }
