@@ -493,7 +493,8 @@ namespace petrov {
       splice(position, other, first, last);
     }
 
-    void sort() noexcept
+    template< class Comparator >
+    void sort(Comparator cmp) noexcept
     {
       if (size_ < 2) {
         return;
@@ -504,9 +505,9 @@ namespace petrov {
       }
       List< T > left;
       left.splice(left.end(), *this, begin(), mid);
-      left.sort();
-      sort();
-      merge(left);
+      left.sort(cmp);
+      sort(cmp);
+      merge(left, cmp);
     }
 
     void merge(List< T >& other) noexcept
