@@ -24,6 +24,19 @@ namespace petrov {
       next_(nullptr),
       prev_(nullptr)
     {}
+
+    Node(T&& value):
+      value_(std::move(value)),
+      next_(nullptr),
+      prev_(nullptr)
+    {}
+
+    template< class First, class... Rest >
+    Node(Node< T >* next, Node< T >* prev, First&& first, Rest&&... rest):
+      value_(std::forward< First >(first), std::forward< Rest >(rest)...),
+      next_(next),
+      prev_(prev)
+    {}
   };
 
   template< class T >
@@ -277,6 +290,19 @@ namespace petrov {
       ++size_;
     }
 
+    void push_front(T&& value)
+    {
+      Node< T >* new_node = new Node< T >(std::move(value));
+      new_node->next_ = head_;
+      if (head_ != nullptr) {
+        head_->prev_ = new_node;
+      } else {
+        tail_ = new_node;
+      }
+      head_ = new_node;
+      ++size_;
+    }
+
     void push_back(const T& value)
     {
       Node< T >* new_node = new Node< T >(value);
@@ -288,6 +314,70 @@ namespace petrov {
       }
       tail_ = new_node;
       ++size_;
+    }
+
+    void push_back(T&& value)
+    {
+      Node< T >* new_node = new Node< T >(std::move(value));
+      new_node->prev_ = tail_;
+      if (tail_ != nullptr) {
+        tail_->next_ = new_node;
+      } else {
+        head_ = new_node;
+      }
+      tail_ = new_node;
+      ++size_;
+    }
+
+    template< class... Args >
+    void emplace_front(Args&&... args)
+    {
+      Node< T >* new_node = new Node< T >(head_, nullptr, std::forward< Args >(args)...);
+      if (head_ != nullptr) {
+        head_->prev_ = new_node;
+      } else {
+        tail_ = new_node;
+      }
+      head_ = new_node;
+      ++size_;
+    }
+
+    template< class... Args >
+    void emplace_back(Args&&... args)
+    {
+      Node< T >* new_node = new Node< T >(nullptr, tail_, std::forward< Args >(args)...);
+      if (tail_ != nullptr) {
+        tail_->next_ = new_node;
+      } else {
+        head_ = new_node;
+      }
+      tail_ = new_node;
+      ++size_;
+    }
+
+    template< class... Args >
+    iterator emplace(iterator pos, Args&&... args)
+    {
+      Node< T >* posNode = pos.ptr_;
+      Node< T >* prevNode = posNode ? posNode->prev_ : tail_;
+      Node< T >* new_node = new Node< T >(posNode, prevNode, std::forward< Args >(args)...);
+      if (posNode) {
+        if (posNode->prev_) {
+          posNode->prev_->next_ = new_node;
+        } else {
+          head_ = new_node;
+        }
+        posNode->prev_ = new_node;
+      } else {
+        if (tail_) {
+          tail_->next_ = new_node;
+        } else {
+          head_ = new_node;
+        }
+        tail_ = new_node;
+      }
+      ++size_;
+      return iterator(new_node);
     }
 
     void popFront()
