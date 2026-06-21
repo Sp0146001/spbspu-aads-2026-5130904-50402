@@ -510,7 +510,8 @@ namespace petrov {
       merge(left, cmp);
     }
 
-    void merge(List< T >& other) noexcept
+    template< class Comparator >
+    void merge(List< T >& other, Comparator cmp) noexcept
     {
       assert(this != std::addressof(other));
       if (other.empty()) {
@@ -529,7 +530,7 @@ namespace petrov {
       while (p1 != nullptr && p2 != nullptr) {
         Node< T >* next;
         Node< T >* chosen;
-        if (p2->value_ < p1->value_) {
+        if (cmp(p2->value_,p1->value_)) {
           chosen = p2;
           next = p2->next_;
         } else {
