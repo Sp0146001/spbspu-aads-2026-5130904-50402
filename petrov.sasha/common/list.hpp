@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <memory>
 #include <utility>
+#include <functional>
 
 namespace petrov {
 
@@ -495,18 +496,7 @@ namespace petrov {
 
     void sort() noexcept
     {
-      if (size_ < 2) {
-        return;
-      }
-      iterator mid = begin();
-      for (std::size_t i = 0; i < size_ / 2; ++i) {
-        ++mid;
-      }
-      List< T > left;
-      left.splice(left.end(), *this, begin(), mid);
-      left.sort();
-      sort();
-      merge(left);
+      sort(std::less< T >{});
     }
 
     template< class Comparator >
@@ -528,61 +518,7 @@ namespace petrov {
 
     void merge(List< T >& other) noexcept
     {
-      assert(this != std::addressof(other));
-      if (other.empty()) {
-        return;
-      }
-      Node< T >* otherFirst = other.head_;
-      std::size_t otherCount = other.size_;
-      other.head_ = nullptr;
-      other.tail_ = nullptr;
-      other.size_ = 0;
-
-      Node< T >* resultHead = nullptr;
-      Node< T >* resultTail = nullptr;
-      Node< T >* p1 = head_;
-      Node< T >* p2 = otherFirst;
-      while (p1 != nullptr && p2 != nullptr) {
-        Node< T >* next;
-        Node< T >* chosen;
-        if (p2->value_ < p1->value_) {
-          chosen = p2;
-          next = p2->next_;
-        } else {
-          chosen = p1;
-          next = p1->next_;
-        }
-        chosen->prev_ = resultTail;
-        chosen->next_ = nullptr;
-        if (resultTail != nullptr) {
-          resultTail->next_ = chosen;
-        } else {
-          resultHead = chosen;
-        }
-        resultTail = chosen;
-        if (chosen == p2) {
-          p2 = next;
-        } else {
-          p1 = next;
-        }
-      }
-      Node< T >* rest = (p1 != nullptr) ? p1 : p2;
-      while (rest != nullptr) {
-        Node< T >* next = rest->next_;
-        rest->prev_ = resultTail;
-        rest->next_ = nullptr;
-        if (resultTail != nullptr) {
-          resultTail->next_ = rest;
-        } else {
-          resultHead = rest;
-        }
-        resultTail = rest;
-        rest = next;
-      }
-
-      head_ = resultHead;
-      tail_ = resultTail;
-      size_ += otherCount;
+      merge(other, std::less< T >{});
     }
 
     template< class Comparator >
@@ -648,6 +584,12 @@ namespace petrov {
     void merge(List< T >&& other) noexcept
     {
       merge(other);
+    }
+
+    template< class Comparator >
+    void List< T >::merge(List< T > &&other, Comparator cmp) noexcept
+    {
+      merge(other, cmp);
     }
 
     template< class Predicate >
