@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <memory>
 #include <utility>
+#include <functional>
 
 namespace petrov {
 
@@ -585,6 +586,12 @@ namespace petrov {
 
     void sort() noexcept
     {
+      sort(std::less< T >{});
+    }
+
+    template< class Comparator >
+    void sort(Comparator cmp) noexcept
+    {
       if (size_ < 2) {
         return;
       }
@@ -594,12 +601,18 @@ namespace petrov {
       }
       List< T > left;
       left.splice(left.end(), *this, begin(), mid);
-      left.sort();
-      sort();
-      merge(left);
+      left.sort(cmp);
+      sort(cmp);
+      merge(left, cmp);
     }
 
     void merge(List< T >& other) noexcept
+    {
+      merge(other, std::less< T >{});
+    }
+
+    template< class Comparator >
+    void merge(List< T >& other, Comparator cmp) noexcept
     {
       assert(this != std::addressof(other));
       if (other.empty()) {
@@ -618,7 +631,7 @@ namespace petrov {
       while (p1 != nullptr && p2 != nullptr) {
         Node< T >* next;
         Node< T >* chosen;
-        if (p2->value_ < p1->value_) {
+        if (cmp(p2->value_, p1->value_)) {
           chosen = p2;
           next = p2->next_;
         } else {
@@ -661,6 +674,12 @@ namespace petrov {
     void merge(List< T >&& other) noexcept
     {
       merge(other);
+    }
+
+    template< class Comparator >
+    void merge(List< T > &&other, Comparator cmp) noexcept
+    {
+      merge(other, cmp);
     }
 
     template< class Predicate >

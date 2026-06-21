@@ -208,7 +208,6 @@ BOOST_AUTO_TEST_CASE(test_splice)
   list2.push_back(20);
   list2.push_back(30);
 
-  // splice(pos, other&&) - перенос всех через rvalue
   petrov::List< int > tmp_rvalue;
   tmp_rvalue.push_back(100);
   tmp_rvalue.push_back(200);
@@ -226,7 +225,6 @@ BOOST_AUTO_TEST_CASE(test_splice)
   list1.popBack();
   list1.popBack();
 
-  // splice(pos, other) - перенос всех элементов
   petrov::List< int > tmp1;
   tmp1.push_back(100);
   tmp1.push_back(200);
@@ -234,14 +232,12 @@ BOOST_AUTO_TEST_CASE(test_splice)
   BOOST_CHECK_EQUAL(list1.size(), 4);
   BOOST_CHECK_EQUAL(tmp1.size(), 0);
 
-  // splice(pos, other, i) - перенос одного элемента
   petrov::LIter< int > it2 = list2.begin();
   ++it2;
   list1.splice(list1.begin(), list2, it2);
   BOOST_CHECK_EQUAL(list1.size(), 5);
   BOOST_CHECK_EQUAL(list2.size(), 2);
 
-  // splice(pos, other, first, last) - перенос диапазона
   petrov::LIter< int > first = list2.begin();
   petrov::LIter< int > last = list2.begin();
   ++last;
