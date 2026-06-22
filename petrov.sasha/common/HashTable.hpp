@@ -408,12 +408,30 @@ namespace petrov
       return maxLen;
     }
 
+    void setMaxLoadFactor(double maxLf) noexcept
+    {
+      maxLoadFactor_ = maxLf;
+    }
+
+    void setMaxChainLength(size_t maxLen) noexcept
+    {
+      maxChainLength_ = maxLen;
+    }
+
+    void setResizePolicy(std::function< size_t(size_t) > policy) noexcept
+    {
+      resizePolicy_ = policy;
+    }
+
   private:
     Node< Key, Value >** table_;
     size_t capacity_;
     size_t size_;
     Hash hash_;
     Equal equal_;
+    double maxLoadFactor_;
+    size_t maxChainLength_;
+    std::function< size_t(size_t) > resizePolicy_;
 
     size_t getBucket(const Key& k) const
     {
