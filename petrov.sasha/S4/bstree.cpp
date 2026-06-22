@@ -206,7 +206,7 @@ petrov::BSTIterator< Key, Value >::operator petrov::BSTConstIterator< Key, Value
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::Node* petrov::BSTree< Key, Value, Compare >::root() const noexcept
 {
-  return m_fake->left;
+  return m_fake != nullptr ? m_fake->left : nullptr;
 }
 
 template< class Key, class Value, class Compare >
@@ -230,8 +230,10 @@ petrov::BSTree< Key, Value, Compare >::BSTree():
 template< class Key, class Value, class Compare >
 petrov::BSTree< Key, Value, Compare >::~BSTree()
 {
-  clear(root());
-  delete m_fake;
+  if (m_fake != nullptr) {
+    clear(root());
+    delete m_fake;
+  }
 }
 
 template< class Key, class Value, class Compare >
