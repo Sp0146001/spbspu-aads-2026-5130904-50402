@@ -52,9 +52,7 @@ petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::op
     delete m_fake;
     m_fake = other.m_fake;
     m_compare = other.m_compare;
-    other.m_fake = new Node(Key(), Value(), nullptr);
-    other.m_fake->left = nullptr;
-    other.m_fake->right = nullptr;
+    other.m_fake = nullptr;
   }
   return *this;
 }
