@@ -3,9 +3,8 @@
 #include <stdexcept>
 #include <string>
 
-template< class Key, class Value, class Compare >
-petrov::BSTree< Key, Value, Compare >::Node::Node(
-  const Key& key, const Value& value, Node* parentNode):
+template< class K, class V, class C >
+petrov::BSTree< K, V, C >::Node::Node(const K& key, const V& value, Node* parentNode):
   data(key, value),
   parent(parentNode),
   left(nullptr),
@@ -13,7 +12,7 @@ petrov::BSTree< Key, Value, Compare >::Node::Node(
 {}
 
 template< class Key, class Value, class Compare >
-petrov::BSTree< Key, Value, Compare >::BSTree(const BSTree & other):
+petrov::BSTree< Key, Value, Compare >::BSTree(const BSTree& other):
   m_fake(new Node(Key(), Value(), nullptr)),
   m_compare(other.m_compare)
 {
@@ -22,7 +21,7 @@ petrov::BSTree< Key, Value, Compare >::BSTree(const BSTree & other):
 }
 
 template< class Key, class Value, class Compare >
-petrov::BSTree< Key, Value, Compare >::BSTree(BSTree && other) noexcept:
+petrov::BSTree< Key, Value, Compare >::BSTree(BSTree&& other) noexcept:
   m_fake(other.m_fake),
   m_compare(other.m_compare)
 {
@@ -32,7 +31,7 @@ petrov::BSTree< Key, Value, Compare >::BSTree(BSTree && other) noexcept:
 }
 
 template< class Key, class Value, class Compare >
-petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(const BSTree & other)
+petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(const BSTree& other)
 {
   if (this != &other) {
     clear(root());
@@ -43,7 +42,7 @@ petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::op
 }
 
 template< class Key, class Value, class Compare >
-petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(BSTree && other) noexcept
+petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(BSTree&& other) noexcept
 {
   if (this != &other) {
     clear(root());
@@ -85,21 +84,21 @@ petrov::BSTConstIterator< Key, Value >::BSTConstIterator(
 {}
 
 template< class Key, class Value >
-const typename petrov::BSTConstIterator< Key, Value >::value_type &
+const typename petrov::BSTConstIterator< Key, Value >::value_type&
 petrov::BSTConstIterator< Key, Value >::operator*() const noexcept
 {
   return m_node->data;
 }
 
 template< class Key, class Value >
-const typename petrov::BSTConstIterator< Key, Value >::value_type *
+const typename petrov::BSTConstIterator< Key, Value >::value_type*
 petrov::BSTConstIterator< Key, Value >::operator->() const noexcept
 {
   return &m_node->data;
 }
 
 template< class Key, class Value >
-petrov::BSTConstIterator< Key, Value > &
+petrov::BSTConstIterator< Key, Value >&
 petrov::BSTConstIterator< Key, Value >::operator++() noexcept
 {
   if (m_node == nullptr) {
