@@ -393,6 +393,21 @@ namespace petrov
       return static_cast< double >(size_) / static_cast< double >(capacity_);
     }
 
+    size_t maxChainLength() const noexcept
+    {
+      size_t maxLen = 0;
+      for (size_t i = 0; i < capacity_; ++i) {
+        size_t currLen = 0;
+        for (Node< Key, Value >* curr = table_[i]; curr != nullptr; curr = curr->next) {
+          ++currLen;
+        }
+        if (currLen > maxLen) {
+          maxLen = currLen;
+        }
+      }
+      return maxLen;
+    }
+
   private:
     Node< Key, Value >** table_;
     size_t capacity_;
