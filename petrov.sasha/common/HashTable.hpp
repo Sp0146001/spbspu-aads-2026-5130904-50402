@@ -9,6 +9,17 @@
 
 namespace petrov
 {
+  namespace details
+  {
+    struct ResizeSlots
+    {
+      size_t operator()(size_t before) const noexcept
+      {
+        return before < 10 ? 20 : before * 2;
+      }
+    };
+  }
+
   template< class Key, class Value >
   struct Node
   {
