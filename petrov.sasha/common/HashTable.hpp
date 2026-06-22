@@ -385,6 +385,14 @@ namespace petrov
       return size_ == 0;
     }
 
+    double loadFactor() const noexcept
+    {
+      if (capacity_ == 0) {
+        return 0.0;
+      }
+      return static_cast< double >(size_) / static_cast< double >(capacity_);
+    }
+
   private:
     Node< Key, Value >** table_;
     size_t capacity_;
