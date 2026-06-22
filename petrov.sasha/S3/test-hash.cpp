@@ -194,4 +194,15 @@ BOOST_AUTO_TEST_CASE(test_auto_rehash)
   BOOST_CHECK(table.loadFactor() < 0.75);
 }
 
+BOOST_AUTO_TEST_CASE(test_set_resize_policy)
+{
+  petrov::HashTable< int, std::string, petrov::SHA1Hasher< int >, petrov::DefaultEqual< int > > table(8);
+  table.setResizePolicy([](size_t before) { return before + 5; });
+  table.setMaxLoadFactor(0.1);
+  for (int i = 0; i < 20; ++i) {
+    table.add(i, "value");
+  }
+  BOOST_CHECK(table.size() == 20u);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
