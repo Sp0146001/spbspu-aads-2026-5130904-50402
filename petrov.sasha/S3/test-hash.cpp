@@ -163,4 +163,14 @@ BOOST_AUTO_TEST_CASE(test_pair_keys)
   BOOST_CHECK_EQUAL(table.size(), 2);
 }
 
+BOOST_AUTO_TEST_CASE(test_load_factor)
+{
+  petrov::HashTable< int, std::string, petrov::SHA1Hasher< int >, petrov::DefaultEqual< int > > table(100);
+  BOOST_CHECK_EQUAL(table.loadFactor(), 0.0);
+  for (int i = 0; i < 50; ++i) {
+    table.add(i, "value");
+  }
+  BOOST_CHECK_CLOSE(table.loadFactor(), 0.5, 1e-9);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
