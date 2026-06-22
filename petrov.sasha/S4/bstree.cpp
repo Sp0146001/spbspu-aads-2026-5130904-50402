@@ -30,9 +30,7 @@ petrov::BSTree< Key, Value, Compare >::BSTree(BSTree&& other) noexcept:
   m_fake(other.m_fake),
   m_compare(other.m_compare)
 {
-  other.m_fake = new Node(Key(), Value(), nullptr);
-  other.m_fake->left = nullptr;
-  other.m_fake->right = nullptr;
+  other.m_fake = nullptr;
 }
 
 template< class Key, class Value, class Compare >
