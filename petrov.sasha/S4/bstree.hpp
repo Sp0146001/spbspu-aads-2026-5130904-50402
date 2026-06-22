@@ -78,6 +78,8 @@ namespace petrov
     Node* rotateLeftNode(Node* node);
     Node* rotateRightNode(Node* node);
 
+    void eraseNode(Node* node) noexcept;
+
     template< class K, class V >
     friend class BSTConstIterator;
 

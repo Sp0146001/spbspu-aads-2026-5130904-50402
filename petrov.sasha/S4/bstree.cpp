@@ -477,6 +477,13 @@ Value petrov::BSTree< Key, Value, Compare >::drop(const Key& key)
     throw std::out_of_range("Key not found");
   }
   Value result = node->data.second;
+  eraseNode(node);
+  return result;
+}
+
+template< class Key, class Value, class Compare >
+void petrov::BSTree< Key, Value, Compare >::eraseNode(Node* node) noexcept
+{
   if (node->left != nullptr && node->right != nullptr) {
     Node* successor = minimum(node->right);
     const_cast< Key& >(node->data.first) = successor->data.first;
@@ -493,7 +500,6 @@ Value petrov::BSTree< Key, Value, Compare >::drop(const Key& key)
     node->parent->right = child;
   }
   delete node;
-  return result;
 }
 
 template class petrov::BSTConstIterator< int, std::string >;
