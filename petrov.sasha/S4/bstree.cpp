@@ -16,7 +16,12 @@ petrov::BSTree< Key, Value, Compare >::BSTree(const BSTree& other):
   m_fake(new Node(Key(), Value(), nullptr)),
   m_compare(other.m_compare)
 {
-  m_fake->left = copy(other.root(), m_fake);
+  try {
+    m_fake->left = copy(other.root(), m_fake);
+  } catch (...) {
+    delete m_fake;
+    throw;
+  }
   m_fake->right = nullptr;
 }
 
