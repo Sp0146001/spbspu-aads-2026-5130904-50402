@@ -10,7 +10,7 @@ namespace petrov {
   class Queue
   {
     public:
-      void push(const T& rhs) 
+      void push(const T& rhs)
       {
         list_.push_back(rhs);
       }

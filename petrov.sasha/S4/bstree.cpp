@@ -442,7 +442,7 @@ petrov::BSTree< Key, Value, Compare >::minimum(Node* node) const noexcept
 
 template< class Key, class Value, class Compare >
 typename petrov::BSTree< Key, Value, Compare >::iterator
-petrov::BSTree< Key, Value, Compare >::begin() noexcept 
+petrov::BSTree< Key, Value, Compare >::begin() noexcept
 {
   return iterator(minimum(root()), m_fake);
 }
