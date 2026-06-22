@@ -262,6 +262,22 @@ namespace petrov
     void add(const Key& k, const Value& v)
     {
       size_t bucket = getBucket(k);
+      bool needRehash = false;
+      if (maxLoadFactor_ > 0.0 && capacity_ > 0) {
+        needRehash = (static_cast< double >(size_ + 1) / static_cast< double >(capacity_)) >= maxLoadFactor_;
+      }
+      if (!needRehash && maxChainLength_ > 0) {
+        size_t currLen = 0;
+        for (Node< Key, Value >* curr = table_[bucket]; curr != nullptr; curr = curr->next) {
+          ++currLen;
+        }
+        needRehash = (currLen + 1) >= maxChainLength_;
+      }
+      if (needRehash) {
+        size_t newSlots = resizePolicy_(capacity_);
+        rehash(newSlots);
+        bucket = getBucket(k);
+      }
       Node< Key, Value >* newNode = new Node< Key, Value >(k, v);
       newNode->next = table_[bucket];
       table_[bucket] = newNode;
