@@ -183,4 +183,15 @@ BOOST_AUTO_TEST_CASE(test_max_chain_length)
   BOOST_CHECK(table.maxChainLength() > 0u);
 }
 
+BOOST_AUTO_TEST_CASE(test_auto_rehash)
+{
+  petrov::HashTable< int, std::string, petrov::SHA1Hasher< int >, petrov::DefaultEqual< int > > table(16);
+  table.setMaxLoadFactor(0.5);
+  for (int i = 0; i < 100; ++i) {
+    table.add(i, "value");
+  }
+  BOOST_CHECK(table.size() == 100u);
+  BOOST_CHECK(table.loadFactor() < 0.75);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
