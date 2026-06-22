@@ -188,7 +188,10 @@ namespace petrov
       capacity_(slots),
       size_(0),
       hash_(),
-      equal_()
+      equal_(),
+      maxLoadFactor_(0.75),
+      maxChainLength_(10),
+      resizePolicy_(details::ResizeSlots{})
     {}
 
     HashTable(const HashTable& other):
@@ -196,7 +199,10 @@ namespace petrov
       capacity_(other.capacity_),
       size_(0),
       hash_(other.hash_),
-      equal_(other.equal_)
+      equal_(other.equal_),
+      maxLoadFactor_(other.maxLoadFactor_),
+      maxChainLength_(other.maxChainLength_),
+      resizePolicy_(other.resizePolicy_)
     {
       try {
         for (size_t i = 0; i < other.capacity_; ++i) {
@@ -219,7 +225,10 @@ namespace petrov
       capacity_(other.capacity_),
       size_(other.size_),
       hash_(std::move(other.hash_)),
-      equal_(std::move(other.equal_))
+      equal_(std::move(other.equal_)),
+      maxLoadFactor_(other.maxLoadFactor_),
+      maxChainLength_(other.maxChainLength_),
+      resizePolicy_(std::move(other.resizePolicy_))
     {
       other.table_ = nullptr;
       other.capacity_ = 0;
@@ -245,6 +254,9 @@ namespace petrov
       std::swap(size_, other.size_);
       std::swap(hash_, other.hash_);
       std::swap(equal_, other.equal_);
+      std::swap(maxLoadFactor_, other.maxLoadFactor_);
+      std::swap(maxChainLength_, other.maxChainLength_);
+      std::swap(resizePolicy_, other.resizePolicy_);
     }
 
     void add(const Key& k, const Value& v)
