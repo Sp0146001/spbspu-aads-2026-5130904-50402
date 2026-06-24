@@ -42,7 +42,7 @@ void petrov::BSTree< Key, Value, Compare >::swap(BSTree& other) noexcept
 template< class Key, class Value, class Compare >
 petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(const BSTree& other)
 {
-  if (this != other) {
+  if (this != &other) {
     BSTree temp(other);
     swap(temp);
   }
