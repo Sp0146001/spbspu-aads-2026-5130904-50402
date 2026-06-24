@@ -34,6 +34,12 @@ petrov::BSTree< Key, Value, Compare >::BSTree(BSTree&& other) noexcept:
 }
 
 template< class Key, class Value, class Compare >
+void petrov::BSTree< Key, Value, Compare >::swap(BSTree& other) noexcept
+{
+  std::swap(m_fake, other.m_fake);
+  std::swap(m_compare, other.m_compare);
+}
+template< class Key, class Value, class Compare >
 petrov::BSTree< Key, Value, Compare >& petrov::BSTree< Key, Value, Compare >::operator=(const BSTree& other)
 {
   if (this != &other) {
@@ -65,8 +71,13 @@ petrov::BSTree< Key, Value, Compare >::copy(Node* node, Node* parent)
     return nullptr;
   }
   Node* newNode = new Node(node->data.first, node->data.second, parent);
-  newNode->left = copy(node->left, newNode);
-  newNode->right = copy(node->right, newNode);
+  try {
+    newNode->left = copy(node->left, newNode);
+    newNode->right = copy(node->right, newNode);
+  } catch (...) {
+    clear(newNode);
+    throw;
+  }
   return newNode;
 }
 
