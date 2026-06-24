@@ -9,6 +9,17 @@
 
 namespace petrov
 {
+  namespace details
+  {
+    struct ResizeSlots
+    {
+      size_t operator()(size_t before) const noexcept
+      {
+        return before < 10 ? 20 : before * 2;
+      }
+    };
+  }
+
   template< class Key, class Value >
   struct Node
   {
@@ -177,7 +188,10 @@ namespace petrov
       capacity_(slots),
       size_(0),
       hash_(),
-      equal_()
+      equal_(),
+      maxLoadFactor_(0.75),
+      maxChainLength_(10),
+      resizePolicy_(details::ResizeSlots{})
     {}
 
     HashTable(const HashTable& other):
@@ -185,7 +199,10 @@ namespace petrov
       capacity_(other.capacity_),
       size_(0),
       hash_(other.hash_),
-      equal_(other.equal_)
+      equal_(other.equal_),
+      maxLoadFactor_(other.maxLoadFactor_),
+      maxChainLength_(other.maxChainLength_),
+      resizePolicy_(other.resizePolicy_)
     {
       try {
         for (size_t i = 0; i < other.capacity_; ++i) {
@@ -208,7 +225,10 @@ namespace petrov
       capacity_(other.capacity_),
       size_(other.size_),
       hash_(std::move(other.hash_)),
-      equal_(std::move(other.equal_))
+      equal_(std::move(other.equal_)),
+      maxLoadFactor_(other.maxLoadFactor_),
+      maxChainLength_(other.maxChainLength_),
+      resizePolicy_(std::move(other.resizePolicy_))
     {
       other.table_ = nullptr;
       other.capacity_ = 0;
@@ -234,11 +254,30 @@ namespace petrov
       std::swap(size_, other.size_);
       std::swap(hash_, other.hash_);
       std::swap(equal_, other.equal_);
+      std::swap(maxLoadFactor_, other.maxLoadFactor_);
+      std::swap(maxChainLength_, other.maxChainLength_);
+      std::swap(resizePolicy_, other.resizePolicy_);
     }
 
     void add(const Key& k, const Value& v)
     {
       size_t bucket = getBucket(k);
+      bool needRehash = false;
+      if (maxLoadFactor_ > 0.0 && capacity_ > 0) {
+        needRehash = (static_cast< double >(size_ + 1) / static_cast< double >(capacity_)) >= maxLoadFactor_;
+      }
+      if (!needRehash && maxChainLength_ > 0) {
+        size_t currLen = 0;
+        for (Node< Key, Value >* curr = table_[bucket]; curr != nullptr; curr = curr->next) {
+          ++currLen;
+        }
+        needRehash = (currLen + 1) >= maxChainLength_;
+      }
+      if (needRehash) {
+        size_t newSlots = resizePolicy_(capacity_);
+        rehash(newSlots);
+        bucket = getBucket(k);
+      }
       Node< Key, Value >* newNode = new Node< Key, Value >(k, v);
       newNode->next = table_[bucket];
       table_[bucket] = newNode;
@@ -374,12 +413,53 @@ namespace petrov
       return size_ == 0;
     }
 
+    double loadFactor() const noexcept
+    {
+      if (capacity_ == 0) {
+        return 0.0;
+      }
+      return static_cast< double >(size_) / static_cast< double >(capacity_);
+    }
+
+    size_t maxChainLength() const noexcept
+    {
+      size_t maxLen = 0;
+      for (size_t i = 0; i < capacity_; ++i) {
+        size_t currLen = 0;
+        for (Node< Key, Value >* curr = table_[i]; curr != nullptr; curr = curr->next) {
+          ++currLen;
+        }
+        if (currLen > maxLen) {
+          maxLen = currLen;
+        }
+      }
+      return maxLen;
+    }
+
+    void setMaxLoadFactor(double maxLf) noexcept
+    {
+      maxLoadFactor_ = maxLf;
+    }
+
+    void setMaxChainLength(size_t maxLen) noexcept
+    {
+      maxChainLength_ = maxLen;
+    }
+
+    void setResizePolicy(std::function< size_t(size_t) > policy) noexcept
+    {
+      resizePolicy_ = policy;
+    }
+
   private:
     Node< Key, Value >** table_;
     size_t capacity_;
     size_t size_;
     Hash hash_;
     Equal equal_;
+    double maxLoadFactor_;
+    size_t maxChainLength_;
+    std::function< size_t(size_t) > resizePolicy_;
 
     size_t getBucket(const Key& k) const
     {
