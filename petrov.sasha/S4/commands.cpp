@@ -13,7 +13,8 @@ namespace petrov
   const std::size_t COMMAND_COUNT = sizeof(COMMANDS) / sizeof(COMMANDS[0]);
 }
 
-const petrov::Command* petrov::findCommand(const std::string& name) {
+const petrov::Command* petrov::findCommand(const std::string& name)
+{
   for (std::size_t i = 0; i < COMMAND_COUNT; ++i) {
     if (name == COMMANDS[i].name) {
       return &COMMANDS[i];
@@ -21,7 +22,8 @@ const petrov::Command* petrov::findCommand(const std::string& name) {
   }
   return nullptr;
 }
-void petrov::printCommand(Storage& storage, std::istream& in, std::ostream& out) {
+void petrov::printCommand(Storage& storage, std::istream& in, std::ostream& out)
+{
   std::string dataset;
   if (!(in >> dataset) || !storage.has(dataset)) {
     out << "<INVALID COMMAND>" << '\n';
@@ -39,7 +41,8 @@ void petrov::printCommand(Storage& storage, std::istream& in, std::ostream& out)
   out << '\n';
 }
 
-void petrov::complementCommand(Storage& storage, std::istream& in, std::ostream& out) {
+void petrov::complementCommand(Storage& storage, std::istream& in, std::ostream& out)
+{
   std::string newName;
   std::string leftName;
   std::string rightName;
@@ -58,7 +61,8 @@ void petrov::complementCommand(Storage& storage, std::istream& in, std::ostream&
   storage.push(newName, result);
 }
 
-void petrov::intersectCommand(Storage& storage, std::istream& in, std::ostream& out) {
+void petrov::intersectCommand(Storage& storage, std::istream& in, std::ostream& out)
+{
   std::string newName;
   std::string leftName;
   std::string rightName;
@@ -77,7 +81,8 @@ void petrov::intersectCommand(Storage& storage, std::istream& in, std::ostream& 
   storage.push(newName, result);
 }
 
-void petrov::unionCommand(Storage& storage, std::istream& in, std::ostream& out) {
+void petrov::unionCommand(Storage& storage, std::istream& in, std::ostream& out)
+{
   std::string newName;
   std::string leftName;
   std::string rightName;

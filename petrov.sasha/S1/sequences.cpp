@@ -26,9 +26,9 @@ bool petrov::readSequences(std::istream& input, SequenceList& sequences)
       if (!(input >> number)) {
         return false;
       }
-      numbers.pushBack(number);
+      numbers.push_back(number);
     }
-    sequences.pushBack(std::make_pair(name, std::move(numbers)));
+    sequences.push_back(std::make_pair(name, std::move(numbers)));
     if (input.eof()) {
       break;
     }
@@ -60,11 +60,11 @@ void petrov::buildRows(const SequenceList& sequences, RowList& rows)
         ++current_index;
       }
       if (num_it != seq_it->second.cend()) {
-        row.pushBack(*num_it);
+        row.push_back(*num_it);
       }
     }
     if (!(row.empty())) {
-      rows.pushBack(std::move(row));
+      rows.push_back(std::move(row));
     }
   }
 }
@@ -80,7 +80,7 @@ bool petrov::buildSums(const RowList& rows, NumberList& sums)
       }
       sum += *num_it;
     }
-    sums.pushBack(sum);
+    sums.push_back(sum);
   }
   return true;
 }

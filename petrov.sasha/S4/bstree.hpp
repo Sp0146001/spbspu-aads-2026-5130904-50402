@@ -1,5 +1,5 @@
-#ifndef PETROV_S4_BSTREE_HPP
-#define PETROV_S4_BSTREE_HPP
+#ifndef BSTREE_HPP
+#define BSTREE_HPP
 
 #include <cstddef>
 #include <functional>
@@ -28,6 +28,8 @@ namespace petrov
 
     BSTree& operator=(const BSTree& other);
     BSTree& operator=(BSTree&& other) noexcept;
+
+    void swap(BSTree& other) noexcept;
 
     void push(const Key& key, const Value& value);
     Value& get(const Key& key);
@@ -77,6 +79,8 @@ namespace petrov
 
     Node* rotateLeftNode(Node* node);
     Node* rotateRightNode(Node* node);
+
+    void eraseNode(Node* node) noexcept;
 
     template< class K, class V >
     friend class BSTConstIterator;
