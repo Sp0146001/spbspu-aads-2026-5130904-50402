@@ -1,5 +1,5 @@
-#ifndef PETROV_F0_COMMANDS_HPP
-#define PETROV_F0_COMMANDS_HPP
+#ifndef COMMANDS_HPP
+#define COMMANDS_HPP
 
 #include <iosfwd>
 #include <string>
